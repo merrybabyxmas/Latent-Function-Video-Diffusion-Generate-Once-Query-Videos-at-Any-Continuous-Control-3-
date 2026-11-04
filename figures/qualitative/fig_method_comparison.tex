@@ -1,29 +1,49 @@
-% Qualitative comparison at matched control values (MotionStone-style grid).
+% MEAD method comparison across the three measured controls.
 \begin{figure*}[t]
 \centering
-\qsetup{\dimexpr(\textwidth-13pt)/2-\qL-2pt\relax}%
+\qsetupthree{.355\textwidth}%
 \qpanel{%
-  \qtitle{\textbf{(a) Lighting}\enspace{\color{qgray}held-out object 335,\ $s{=}0.529$}}
-  \qframes
-  \qrow{black}{\scriptsize Target}{\qimg{lighting_L3_f013_s100_m0_s04.png}}
-  \qrow{qgray}{\scriptsize Pointwise}{\qimg{lighting_L3_f013_s100_m2_s04.png}}
-  \qrow{qgray}{\scriptsize Endpoint interp.}{\qimg{lighting_L3_f013_s100_m3_s04.png}}
-  \qrow{qblue}{\scriptsize\bfseries LFVD}{\qimghl{lighting_L3_f013_s100_m4_s04.png}}
+  \qtitle{\textbf{(a) M003 happy-002}\enspace{\color{qgray}seed 100, $t{=}2$}}
+  \qcontrols
+  \qrow{black}{\scriptsize Target}{\qimg{mead_M0_f008_s100_t02_m0_controls.png}}
+  \qrow{qgray}{\scriptsize Pointwise}{\qimg{mead_M0_f008_s100_t02_m2_controls.png}}
+  \qrow{qgray}{\scriptsize Endpoint interp.}{\qimg{mead_M0_f008_s100_t02_m3_controls.png}}
+  \qrow{qblue}{\scriptsize\bfseries LFVD}{\qimghl{mead_M0_f008_s100_t02_m4_controls.png}}
 }\hfill{\color{black!25}\vrule width .4pt}\hfill
 \qpanel{%
-  \qtitle{\textbf{(b) MEAD}\enspace{\color{qgray}held-out actor M003, happy,\ $s{=}0.5$}}
-  \qframes
-  \qrow{black}{\scriptsize Target}{\qimg{mead_M0_f007_s100_m0_s01.png}}
-  \qrow{qgray}{\scriptsize Pointwise}{\qimg{mead_M0_f007_s100_m2_s01.png}}
-  \qrow{qgray}{\scriptsize Endpoint interp.}{\qimg{mead_M0_f007_s100_m3_s01.png}}
-  \qrow{qblue}{\scriptsize\bfseries LFVD}{\qimghl{mead_M0_f007_s100_m4_s01.png}}
+  \qtitle{\textbf{(b) M003 happy-015}\enspace{\color{qgray}seed 100, $t{=}13$}}
+  \qcontrols
+  \qrow{black}{\scriptsize Target}{\qimg{mead_M0_f013_s100_t13_m0_controls.png}}
+  \qrow{qgray}{\scriptsize Pointwise}{\qimg{mead_M0_f013_s100_t13_m2_controls.png}}
+  \qrow{qgray}{\scriptsize Endpoint interp.}{\qimg{mead_M0_f013_s100_t13_m3_controls.png}}
+  \qrow{qblue}{\scriptsize\bfseries LFVD}{\qimghl{mead_M0_f013_s100_t13_m4_controls.png}}
+}%
+\par\vspace{5pt}
+{\color{black!25}\hrule height .4pt}\vspace{5pt}%
+\qpanel{%
+  \qtitle{\textbf{(c) M003 angry-008}\enspace{\color{qgray}seed 200, $t{=}2$}}
+  \qcontrols
+  \qrow{black}{\scriptsize Target}{\qimg{mead_M0_f004_s200_t02_m0_controls.png}}
+  \qrow{qgray}{\scriptsize Pointwise}{\qimg{mead_M0_f004_s200_t02_m2_controls.png}}
+  \qrow{qgray}{\scriptsize Endpoint interp.}{\qimg{mead_M0_f004_s200_t02_m3_controls.png}}
+  \qrow{qblue}{\scriptsize\bfseries LFVD}{\qimghl{mead_M0_f004_s200_t02_m4_controls.png}}
+}\hfill{\color{black!25}\vrule width .4pt}\hfill
+\qpanel{%
+  \qtitle{\textbf{(d) M005 angry-015}\enspace{\color{qgray}seed 200, $t{=}7$}}
+  \qcontrols
+  \qrow{black}{\scriptsize Target}{\qimg{mead_M0_f020_s200_t07_m0_controls.png}}
+  \qrow{qgray}{\scriptsize Pointwise}{\qimg{mead_M0_f020_s200_t07_m2_controls.png}}
+  \qrow{qgray}{\scriptsize Endpoint interp.}{\qimg{mead_M0_f020_s200_t07_m3_controls.png}}
+  \qrow{qblue}{\scriptsize\bfseries LFVD}{\qimghl{mead_M0_f020_s200_t07_m4_controls.png}}
 }%
 \par\vspace{-3pt}
-\caption{\textbf{Qualitative comparison at matched control values.} Each row
-shows four temporal frames of the same held-out family; rows compare the
-measured target, shared-noise Pointwise, endpoint latent interpolation, and
-LFVD (framed). Lighting is queried at $s=.529$ and MEAD at $s=.5$. All panels
-use the locked 50-step evaluation and are shown without sharpening,
-alignment, or color correction.}
+\caption{\textbf{MEAD qualitative diagnostics across all measured controls.}
+Rows compare the measured target, shared-noise Pointwise, endpoint latent
+interpolation, and LFVD (blue frame); columns are $s\in\{0,.5,1\}$. One
+temporal frame is selected per held-out family to make method differences
+legible. Endpoint interpolation can leave soft double contours (ghosting),
+most visibly around the face in (d), whereas LFVD decodes a single coherent
+face from its sampled family code. Selection is qualitative; aggregate claims
+use all held-out families and seeds in Table~\ref{tab:main_results}.}
 \label{fig:main_qualitative}
 \end{figure*}

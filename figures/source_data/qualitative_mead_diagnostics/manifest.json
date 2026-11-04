@@ -1,0 +1,64 @@
+{
+  "description": "Three measured controls cropped from immutable MEAD all-method GIFs.",
+  "processing": "crop and concatenate only; no sharpening, alignment, or color correction",
+  "methods": {
+    "0": "target",
+    "2": "pointwise_shared_noise",
+    "3": "endpoint_interpolation",
+    "4": "lfvd"
+  },
+  "cases": [
+    {
+      "seed": 100,
+      "family": 8,
+      "family_name": "M003-happy-002",
+      "temporal_frame": 2,
+      "source": "mead/M0/seed_100/family_008_all_methods.gif",
+      "outputs": [
+        "figures/qualitative/mead_M0_f008_s100_t02_m0_controls.png",
+        "figures/qualitative/mead_M0_f008_s100_t02_m2_controls.png",
+        "figures/qualitative/mead_M0_f008_s100_t02_m3_controls.png",
+        "figures/qualitative/mead_M0_f008_s100_t02_m4_controls.png"
+      ]
+    },
+    {
+      "seed": 100,
+      "family": 13,
+      "family_name": "M003-happy-015",
+      "temporal_frame": 13,
+      "source": "mead/M0/seed_100/family_013_all_methods.gif",
+      "outputs": [
+        "figures/qualitative/mead_M0_f013_s100_t13_m0_controls.png",
+        "figures/qualitative/mead_M0_f013_s100_t13_m2_controls.png",
+        "figures/qualitative/mead_M0_f013_s100_t13_m3_controls.png",
+        "figures/qualitative/mead_M0_f013_s100_t13_m4_controls.png"
+      ]
+    },
+    {
+      "seed": 200,
+      "family": 4,
+      "family_name": "M003-angry-008",
+      "temporal_frame": 2,
+      "source": "mead/M0/seed_200/family_004_all_methods.gif",
+      "outputs": [
+        "figures/qualitative/mead_M0_f004_s200_t02_m0_controls.png",
+        "figures/qualitative/mead_M0_f004_s200_t02_m2_controls.png",
+        "figures/qualitative/mead_M0_f004_s200_t02_m3_controls.png",
+        "figures/qualitative/mead_M0_f004_s200_t02_m4_controls.png"
+      ]
+    },
+    {
+      "seed": 200,
+      "family": 20,
+      "family_name": "M005-angry-015",
+      "temporal_frame": 7,
+      "source": "mead/M0/seed_200/family_020_all_methods.gif",
+      "outputs": [
+        "figures/qualitative/mead_M0_f020_s200_t07_m0_controls.png",
+        "figures/qualitative/mead_M0_f020_s200_t07_m2_controls.png",
+        "figures/qualitative/mead_M0_f020_s200_t07_m3_controls.png",
+        "figures/qualitative/mead_M0_f020_s200_t07_m4_controls.png"
+      ]
+    }
+  ]
+}

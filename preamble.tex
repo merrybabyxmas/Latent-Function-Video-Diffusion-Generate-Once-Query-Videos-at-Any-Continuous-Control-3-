@@ -38,4 +38,13 @@
   \makebox[\qF]{\scriptsize\color{qgray}$t{=}8$}\hspace{\qG}%
   \makebox[\qF]{\scriptsize\color{qgray}$t{=}12$}\hspace{\qG}%
   \makebox[\qF]{\scriptsize\color{qgray}$t{=}16$}}\par\nointerlineskip\vspace{1.5pt}}
+% Three-control strips used by the MEAD diagnostic grid.
+\newcommand{\qsetupthree}[1]{%
+  \setlength{\qW}{#1}%
+  \setlength{\qF}{0.328205\qW}\setlength{\qG}{0.007692\qW}%
+  \setlength{\qH}{0.328205\qW}}
+\newcommand{\qcontrols}{\mbox{\hspace*{\dimexpr\qL+2pt\relax}%
+  \makebox[\qF]{\scriptsize\color{qorange}\boldmath$s{=}0$}\hspace{\qG}%
+  \makebox[\qF]{\scriptsize\color{qorange}\boldmath$s{=}0.5$}\hspace{\qG}%
+  \makebox[\qF]{\scriptsize\color{qorange}\boldmath$s{=}1$}}\par\nointerlineskip\vspace{1.5pt}}
 \newcommand{\qpanel}[1]{\begin{minipage}[t]{\dimexpr\qL+2pt+\qW\relax}\offinterlineskip\centering#1\end{minipage}}
