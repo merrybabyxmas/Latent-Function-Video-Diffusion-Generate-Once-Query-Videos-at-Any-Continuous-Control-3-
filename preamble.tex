@@ -10,3 +10,32 @@
 % Permit multiple full-width result figures to share a float page.
 \renewcommand{\floatpagefraction}{.55}
 \renewcommand{\dblfloatpagefraction}{.55}
+
+% ---------------------------------------------------------------------------
+% Qualitative grids (figures/qualitative/*.tex). Images are label-free strips
+% of four frames built by scripts/build_qualitative_strips.py; every label is
+% typeset here so it matches the paper font.
+\definecolor{qblue}{RGB}{28,91,165}
+\definecolor{qred}{RGB}{190,54,80}
+\definecolor{qorange}{RGB}{214,103,30}
+\definecolor{qgray}{RGB}{105,105,105}
+\newlength{\qW}\newlength{\qH}\newlength{\qF}\newlength{\qG}\newlength{\qL}
+\setlength{\qL}{8pt}
+% #1 = strip width. Strip = 4 x 256 px frames + 3 x 6 px gutters (1042 x 256).
+\newcommand{\qsetup}[1]{%
+  \setlength{\qW}{#1}%
+  \setlength{\qF}{0.245681\qW}\setlength{\qG}{0.005758\qW}%
+  \setlength{\qH}{0.245681\qW}}
+\newcommand{\qlab}[2]{\makebox[\qL][c]{\rotatebox{90}{\makebox[\qH][c]{\color{#1}#2}}}}
+\newcommand{\qimg}[1]{\includegraphics[width=\qW]{figures/qualitative/#1}}
+% Highlighted (ours) strip: thin colored frame, same outer width.
+\newcommand{\qimghl}[1]{{\setlength{\fboxsep}{0pt}\setlength{\fboxrule}{.9pt}%
+  \fcolorbox{qblue}{white}{\includegraphics[width=\dimexpr\qW-1.8pt\relax]{figures/qualitative/#1}}}}
+\newcommand{\qrow}[3]{\mbox{\qlab{#1}{#2}\hspace{2pt}#3}\par\nointerlineskip\vspace{2.2pt}}
+\newcommand{\qtitle}[1]{\mbox{\hspace*{\dimexpr\qL+2pt\relax}\makebox[\qW][c]{\small #1}}\par\nointerlineskip\vspace{2.5pt}}
+\newcommand{\qframes}{\mbox{\hspace*{\dimexpr\qL+2pt\relax}%
+  \makebox[\qF]{\scriptsize\color{qgray}$t{=}4$}\hspace{\qG}%
+  \makebox[\qF]{\scriptsize\color{qgray}$t{=}8$}\hspace{\qG}%
+  \makebox[\qF]{\scriptsize\color{qgray}$t{=}12$}\hspace{\qG}%
+  \makebox[\qF]{\scriptsize\color{qgray}$t{=}16$}}\par\nointerlineskip\vspace{1.5pt}}
+\newcommand{\qpanel}[1]{\begin{minipage}[t]{\dimexpr\qL+2pt+\qW\relax}\offinterlineskip\centering#1\end{minipage}}

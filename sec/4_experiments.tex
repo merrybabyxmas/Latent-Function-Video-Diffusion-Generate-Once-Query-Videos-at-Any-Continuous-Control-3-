@@ -6,6 +6,46 @@ We evaluate video quality, continuous control, and multi-query cost. We also
 test unseen controls, encoder variants, and reconstruction error. Main results
 use held-out objects or actors, three seeds, and 50 denoising steps.
 
+\begin{table*}[t]
+\centering
+\caption{\textbf{Results on held-out objects and actors.} Values are averaged
+over five OpenIllumination folds or four MEAD folds, with three seeds and
+50 denoising steps. Trajectories and DiT calls are counted per video family.
+The best and second-best fidelity or ordering values are bold and underlined
+within each dataset.}
+\label{tab:main_results}
+\footnotesize
+\setlength{\tabcolsep}{4.0pt}
+\begin{tabular}{llrrrrrr}
+\toprule
+Dataset & Method & LPIPS$\downarrow$ & PSNR$\uparrow$ & SSIM$\uparrow$ & $\rho\uparrow$ & Traj. & DiT calls \\
+\midrule
+\multirow{4}{*}{Lighting}
+ & Pointwise independent  & \underline{.3979} & \underline{19.69} & \underline{.737} & .468 & 9 & 450 \\
+ & Pointwise shared-noise & .4000 & 19.29 & .731 & .786 & 9 & 450 \\
+ & Endpoint interpolation & .4059 & 19.33 & .727 & \underline{.860} & 2 & 100 \\
+ & LFVD                   & \textbf{.3216} & \textbf{21.14} & \textbf{.753} & \textbf{.933} & \textbf{1} & \textbf{50} \\
+\midrule
+\multirow{4}{*}{MEAD}
+ & Pointwise independent  & \textbf{.1063} & \textbf{22.97} & \textbf{.764} & .577 & 3 & 150 \\
+ & Pointwise shared-noise & .1157 & 22.54 & .753 & \underline{.743} & 3 & 150 \\
+ & Endpoint interpolation & .1152 & \underline{22.91} & \underline{.762} & \textbf{.859} & 2 & 100 \\
+ & LFVD                   & \underline{.1151} & \textbf{22.97} & .760 & .719 & \textbf{1} & \textbf{50} \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=.40\textwidth]{figures/fig3a_lighting_response.pdf}\hspace{.06\textwidth}%
+\includegraphics[width=.40\textwidth]{figures/fig3b_mead_response.pdf}
+\caption{\textbf{Measured response over the requested control coordinate.}
+Curves aggregate the held-out Lighting and MEAD evaluations. LFVD queries
+the complete curve after one sampled family code; Pointwise executes a full
+trajectory for every coordinate.}
+\label{fig:response_curves}
+\end{figure*}
+
 \subsection{Experimental Setup}
 
 \paragraph{Datasets.}
@@ -51,34 +91,7 @@ intervals (95\%). Full settings and per-sample results are in the supplement.
 
 \subsection{Main Results}
 
-\begin{table*}[t]
-\centering
-\caption{\textbf{Results on held-out objects and actors.} Values are averaged
-over five OpenIllumination folds or four MEAD folds, with three seeds and
-50 denoising steps. Trajectories and DiT calls are counted per video family.
-The best and second-best fidelity or ordering values are bold and underlined
-within each dataset.}
-\label{tab:main_results}
-\footnotesize
-\setlength{\tabcolsep}{4.0pt}
-\begin{tabular}{llrrrrrr}
-\toprule
-Dataset & Method & LPIPS$\downarrow$ & PSNR$\uparrow$ & SSIM$\uparrow$ & $\rho\uparrow$ & Traj. & DiT calls \\
-\midrule
-\multirow{4}{*}{Lighting}
- & Pointwise independent  & \underline{.3979} & \underline{19.69} & \underline{.737} & .468 & 9 & 450 \\
- & Pointwise shared-noise & .4000 & 19.29 & .731 & .786 & 9 & 450 \\
- & Endpoint interpolation & .4059 & 19.33 & .727 & \underline{.860} & 2 & 100 \\
- & LFVD                   & \textbf{.3216} & \textbf{21.14} & \textbf{.753} & \textbf{.933} & \textbf{1} & \textbf{50} \\
-\midrule
-\multirow{4}{*}{MEAD}
- & Pointwise independent  & \textbf{.1063} & \textbf{22.97} & \textbf{.764} & .577 & 3 & 150 \\
- & Pointwise shared-noise & .1157 & 22.54 & .753 & \underline{.743} & 3 & 150 \\
- & Endpoint interpolation & .1152 & \underline{22.91} & \underline{.762} & \textbf{.859} & 2 & 100 \\
- & LFVD                   & \underline{.1151} & \textbf{22.97} & .760 & .719 & \textbf{1} & \textbf{50} \\
-\bottomrule
-\end{tabular}
-\end{table*}
+\input{figures/qualitative/fig_method_comparison}
 
 On OpenIllumination (Table~\ref{tab:main_results}), LFVD improves LPIPS
 from .4000 to .3216, PSNR from 19.29 to 21.14 dB, and correlation from
@@ -92,50 +105,12 @@ On MEAD, LFVD matches shared-noise Pointwise fidelity (.1151 versus .1157
 LPIPS) but has lower correlation (.719 versus .743). Endpoint interpolation
 reaches .859 correlation, despite LFVD's larger endpoint response. These
 results show different fidelity and ordering behavior across control domains.
-Figures~\ref{fig:main_qualitative}--\ref{fig:mead_sweep} show representative
-held-out videos, temporal consistency, and both queried control continua.
+Figure~\ref{fig:response_curves} plots the measured response over $s$.
+Figure~\ref{fig:main_qualitative} compares methods on representative
+held-out videos, and Figure~\ref{fig:control_sweeps} shows both control
+continua decoded from a single LFVD trajectory.
 
-\begin{figure*}[!t]
-\centering
-\includegraphics[width=.47\textwidth]{figures/fig3a_lighting_response.pdf}\hfill
-\includegraphics[width=.47\textwidth]{figures/fig3b_mead_response.pdf}
-\caption{\textbf{Measured response over the requested control coordinate.}
-Curves aggregate the held-out Lighting and MEAD evaluations. LFVD queries
-the complete curve after one sampled family code; Pointwise executes a full
-trajectory for every coordinate.}
-\label{fig:response_curves}
-\end{figure*}
-
-\begin{figure*}[!t]
-\centering
-\includegraphics[width=.80\textwidth]{figures/reviewer_defense/qualitative_method_comparison.png}
-\caption{\textbf{Qualitative comparison at matched control values.} Columns
-show four generated frames from the same held-out family; rows compare the
-measured target, shared-noise Pointwise, endpoint latent interpolation, and
-LFVD. Lighting is queried at $s=.529$ and MEAD at $s=.5$. All panels use
-the locked 50-step evaluation and are shown without sharpening, alignment,
-or color correction.}
-\label{fig:main_qualitative}
-\end{figure*}
-
-\begin{figure*}[!t]
-\centering
-\includegraphics[width=.70\textwidth]{figures/reviewer_defense/qualitative_lighting_control.png}
-\caption{\textbf{Lighting intensity control from one LFVD trajectory.}
-Each panel shows a held-out object at three measured light coordinates;
-columns are temporal frames. All outputs are decoded from one sampled family
-code, with no query-time Video DiT call.}
-\label{fig:lighting_sweep}
-\end{figure*}
-
-\begin{figure*}[!t]
-\centering
-\includegraphics[width=.70\textwidth]{figures/reviewer_defense/qualitative_mead_control.png}
-\caption{\textbf{Expression intensity control from one LFVD trajectory.}
-Each panel shows a held-out MEAD actor--utterance family queried at low,
-medium, and high measured intensity; columns are temporal frames.}
-\label{fig:mead_sweep}
-\end{figure*}
+\input{figures/qualitative/fig_control_sweeps}
 
 \subsection{Generalization to Unseen Controls}
 \label{sec:sparse_control}

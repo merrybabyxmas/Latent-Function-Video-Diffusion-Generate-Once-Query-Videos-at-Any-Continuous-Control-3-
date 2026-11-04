@@ -28,3 +28,19 @@ The generated paper assets are:
 - `figures/reviewer_defense/qualitative_lighting_control.png`
 - `figures/reviewer_defense/qualitative_mead_control.png`
 - `figures/reviewer_defense/qualitative_control_sweeps.png` (combined archival layout)
+
+## Typeset layout (2026-11-04)
+
+The main paper no longer embeds the composited PNGs above. Figures 4 and 5 are
+typeset in LaTeX (`figures/qualitative/fig_method_comparison.tex` and
+`figures/qualitative/fig_control_sweeps.tex`) from label-free four-frame strips,
+so row labels, frame indices, and panel titles use the paper font. Rebuild the
+strips from the same source crops with:
+
+```bash
+python scripts/build_qualitative_strips.py
+```
+
+Grid macros (`\qsetup`, `\qrow`, `\qtitle`, `\qframes`, `\qpanel`) live in
+`preamble.tex`. The former Figures 5 and 6 are merged into one 2x2 control
+figure (`fig:control_sweeps`).

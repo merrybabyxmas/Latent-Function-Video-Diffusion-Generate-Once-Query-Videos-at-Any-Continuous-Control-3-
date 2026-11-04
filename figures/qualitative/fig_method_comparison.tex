@@ -1,0 +1,29 @@
+% Qualitative comparison at matched control values (MotionStone-style grid).
+\begin{figure*}[t]
+\centering
+\qsetup{\dimexpr(\textwidth-13pt)/2-\qL-2pt\relax}%
+\qpanel{%
+  \qtitle{\textbf{(a) Lighting}\enspace{\color{qgray}held-out object 335,\ $s{=}0.529$}}
+  \qframes
+  \qrow{black}{\scriptsize Target}{\qimg{lighting_L3_f013_s100_m0_s04.png}}
+  \qrow{qgray}{\scriptsize Pointwise}{\qimg{lighting_L3_f013_s100_m2_s04.png}}
+  \qrow{qgray}{\scriptsize Endpoint interp.}{\qimg{lighting_L3_f013_s100_m3_s04.png}}
+  \qrow{qblue}{\scriptsize\bfseries LFVD}{\qimghl{lighting_L3_f013_s100_m4_s04.png}}
+}\hfill{\color{black!25}\vrule width .4pt}\hfill
+\qpanel{%
+  \qtitle{\textbf{(b) MEAD}\enspace{\color{qgray}held-out actor M003, happy,\ $s{=}0.5$}}
+  \qframes
+  \qrow{black}{\scriptsize Target}{\qimg{mead_M0_f007_s100_m0_s01.png}}
+  \qrow{qgray}{\scriptsize Pointwise}{\qimg{mead_M0_f007_s100_m2_s01.png}}
+  \qrow{qgray}{\scriptsize Endpoint interp.}{\qimg{mead_M0_f007_s100_m3_s01.png}}
+  \qrow{qblue}{\scriptsize\bfseries LFVD}{\qimghl{mead_M0_f007_s100_m4_s01.png}}
+}%
+\par\vspace{-3pt}
+\caption{\textbf{Qualitative comparison at matched control values.} Each row
+shows four temporal frames of the same held-out family; rows compare the
+measured target, shared-noise Pointwise, endpoint latent interpolation, and
+LFVD (framed). Lighting is queried at $s=.529$ and MEAD at $s=.5$. All panels
+use the locked 50-step evaluation and are shown without sharpening,
+alignment, or color correction.}
+\label{fig:main_qualitative}
+\end{figure*}
