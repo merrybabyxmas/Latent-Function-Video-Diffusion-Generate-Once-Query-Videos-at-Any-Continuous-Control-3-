@@ -2,6 +2,7 @@
 \begin{figure*}[t]
 \centering
 \qsetupthree{.355\textwidth}%
+\makebox[\textwidth][c]{%
 \qpanel{%
   \qtitle{\textbf{(a) M003 happy-002}\enspace{\color{qgray}seed 100, $t{=}2$}}
   \qcontrols
@@ -9,7 +10,7 @@
   \qrow{qgray}{\scriptsize Pointwise}{\qimg{mead_M0_f008_s100_t02_m2_controls.png}}
   \qrow{qgray}{\scriptsize Endpoint interp.}{\qimg{mead_M0_f008_s100_t02_m3_controls.png}}
   \qrow{qblue}{\scriptsize\bfseries LFVD}{\qimghl{mead_M0_f008_s100_t02_m4_controls.png}}
-}\hfill{\color{black!25}\vrule width .4pt}\hfill
+}\hspace{6pt}{\color{black!25}\vrule width .4pt}\hspace{6pt}%
 \qpanel{%
   \qtitle{\textbf{(b) M003 happy-015}\enspace{\color{qgray}seed 100, $t{=}13$}}
   \qcontrols
@@ -17,9 +18,10 @@
   \qrow{qgray}{\scriptsize Pointwise}{\qimg{mead_M0_f013_s100_t13_m2_controls.png}}
   \qrow{qgray}{\scriptsize Endpoint interp.}{\qimg{mead_M0_f013_s100_t13_m3_controls.png}}
   \qrow{qblue}{\scriptsize\bfseries LFVD}{\qimghl{mead_M0_f013_s100_t13_m4_controls.png}}
-}%
+}}%
 \par\vspace{5pt}
 {\color{black!25}\hrule height .4pt}\vspace{5pt}%
+\makebox[\textwidth][c]{%
 \qpanel{%
   \qtitle{\textbf{(c) M003 angry-008}\enspace{\color{qgray}seed 200, $t{=}2$}}
   \qcontrols
@@ -27,7 +29,7 @@
   \qrow{qgray}{\scriptsize Pointwise}{\qimg{mead_M0_f004_s200_t02_m2_controls.png}}
   \qrow{qgray}{\scriptsize Endpoint interp.}{\qimg{mead_M0_f004_s200_t02_m3_controls.png}}
   \qrow{qblue}{\scriptsize\bfseries LFVD}{\qimghl{mead_M0_f004_s200_t02_m4_controls.png}}
-}\hfill{\color{black!25}\vrule width .4pt}\hfill
+}\hspace{6pt}{\color{black!25}\vrule width .4pt}\hspace{6pt}%
 \qpanel{%
   \qtitle{\textbf{(d) M005 angry-015}\enspace{\color{qgray}seed 200, $t{=}7$}}
   \qcontrols
@@ -35,7 +37,7 @@
   \qrow{qgray}{\scriptsize Pointwise}{\qimg{mead_M0_f020_s200_t07_m2_controls.png}}
   \qrow{qgray}{\scriptsize Endpoint interp.}{\qimg{mead_M0_f020_s200_t07_m3_controls.png}}
   \qrow{qblue}{\scriptsize\bfseries LFVD}{\qimghl{mead_M0_f020_s200_t07_m4_controls.png}}
-}%
+}}%
 \par\vspace{-3pt}
 \caption{\textbf{MEAD qualitative diagnostics across all measured controls.}
 Rows compare the measured target, shared-noise Pointwise, endpoint latent
