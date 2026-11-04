@@ -1,0 +1,18 @@
+\begin{table}[t]
+\centering
+\caption{\textbf{Paired sparse-control locked-test differences} (LFVD-Mix
+minus shared-noise Pointwise). Intervals use 10,000 paired cluster-bootstrap
+draws over 20 held-out objects.}
+\label{tab:sparse_ci}
+\scriptsize\setlength{\tabcolsep}{3pt}
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lcc@{}}
+\toprule
+Metric & Difference & 95\% interval \\
+\midrule
+Unseen LPIPS $\downarrow$ & -0.0693 & [-0.0825, -0.0576] \\
+Unseen PSNR $\uparrow$ & +2.409 & [+2.127, +2.691] \\
+Unseen SSIM $\uparrow$ & +0.0248 & [+0.0191, +0.0305] \\
+Control $\rho\uparrow$ & +0.386 & [+0.316, +0.464] \\
+\bottomrule
+\end{tabular*}
+\end{table}

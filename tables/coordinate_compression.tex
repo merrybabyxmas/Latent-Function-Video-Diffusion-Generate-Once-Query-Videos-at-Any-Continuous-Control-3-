@@ -1,0 +1,20 @@
+\begin{table}[t]
+\centering
+\caption{\textbf{Learned-coordinate compression, exact-code oracle.} The
+37-frame native coordinate has the same temporal extent as direct packing.
+Shorter coordinates are trained with the same single reconstruction objective;
+no perceptual or ordering term is added.}
+\label{tab:coordinate_compression}
+\footnotesize
+\setlength{\tabcolsep}{3.5pt}
+\begin{tabular}{rrrrrr}
+\toprule
+Code frames & Ratio & LPIPS$\downarrow$ & PSNR$\uparrow$ & SSIM$\uparrow$ & $\rho\uparrow$ \\
+\midrule
+37 & 1.000 & \textbf{.0642} & \textbf{32.06} & \textbf{.8927} & 1.000 \\
+28 & .757 & .0814 & 30.84 & .8843 & 1.000 \\
+19 & .514 & .1065 & 29.46 & .8721 & 1.000 \\
+10 & .270 & .1750 & 26.45 & .8391 & .975 \\
+\bottomrule
+\end{tabular}
+\end{table}

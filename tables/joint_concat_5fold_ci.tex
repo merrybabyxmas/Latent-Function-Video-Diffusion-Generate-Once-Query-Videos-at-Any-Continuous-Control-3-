@@ -1,0 +1,23 @@
+\begin{table}[t]
+\centering
+\caption{\textbf{LFVD-Identity minus LFVD-Mix, five Lighting folds.}
+Intervals use 10,000 paired bootstrap draws over 20 held-out objects. Positive
+LPIPS and negative PSNR, SSIM, or $\rho$ favor LFVD-Mix.}
+\label{tab:joint_concat_5fold_ci}
+\scriptsize
+\setlength{\tabcolsep}{3.1pt}
+\begin{tabular}{llrrr}
+\toprule
+Protocol & Metric & Mean & 95\% CI low & 95\% CI high \\
+\midrule
+Full grid & LPIPS & -.0014 & -.0058 & .0030 \\
+          & PSNR  & -.0043 & -.0943 & .0853 \\
+          & SSIM  & -.0019 & -.0040 & .0002 \\
+          & $\rho$ & -.0040 & -.0223 & .0182 \\
+Sparse unseen & LPIPS & .0007 & -.0015 & .0028 \\
+              & PSNR  & -.0505 & -.0998 & -.0021 \\
+              & SSIM  & -.0009 & -.0021 & .0002 \\
+Sparse all & $\rho$ & .0013 & -.0037 & .0069 \\
+\bottomrule
+\end{tabular}
+\end{table}

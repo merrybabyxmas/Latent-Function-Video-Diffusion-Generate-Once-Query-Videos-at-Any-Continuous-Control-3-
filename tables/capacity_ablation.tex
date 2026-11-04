@@ -1,0 +1,16 @@
+\begin{table}[t]
+\centering
+\caption{\textbf{Capacity and LoRA-rank audit} (lighting L0 validation). The 24-channel code is not a runnable configuration of the fixed 48-channel direct-decoder interface; it is an architectural constraint, not a failed quality measurement.}
+\label{tab:capacity_ablation}
+\scriptsize\setlength{\tabcolsep}{4pt}
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lccc@{}}
+\toprule
+Variant & LPIPS $\downarrow$ & PSNR $\uparrow$ & $\rho\uparrow$ \\
+\midrule
+Code channels = 24 & -- & -- & -- \\
+Code channels = 48 (exact) & 0.0642 & 32.06 & 1.000 \\
+LoRA rank 16 (sampled) & 0.3610 & 20.60 & 0.925 \\
+LoRA rank 64 (sampled) & \textbf{0.3365} & \textbf{20.86} & \textbf{0.973} \\
+\bottomrule
+\end{tabular*}
+\end{table}

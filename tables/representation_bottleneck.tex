@@ -1,0 +1,15 @@
+\begin{table}[t]
+\centering
+\caption{\textbf{Representation versus generation bottleneck.} Locked lighting validation, 25-step seed-100 setting. The first row is the frozen-VAE reconstruction floor. Exact-code decoding reconstructs the observed family; the last row samples the code from conditions only.}
+\label{tab:representation_bottleneck}
+\scriptsize\setlength{\tabcolsep}{3pt}\renewcommand{\arraystretch}{1.12}
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lcccc@{}}
+\toprule
+Stage & LPIPS $\downarrow$ & PSNR $\uparrow$ & SSIM $\uparrow$ & $\rho\uparrow$ \\
+\midrule
+Frozen-VAE target & \textbf{0.0512} & \textbf{33.17} & \textbf{0.8990} & 1.000 \\
+Exact family code & 0.0642 & 32.06 & 0.8927 & 1.000 \\
+Sampled family code & 0.3365 & 20.86 & 0.7487 & 0.973 \\
+\bottomrule
+\end{tabular*}
+\end{table}

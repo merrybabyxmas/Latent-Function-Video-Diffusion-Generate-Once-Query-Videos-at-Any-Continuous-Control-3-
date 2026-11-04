@@ -1,0 +1,311 @@
+
+\section{Experiments}
+\label{sec:experiments}
+
+We evaluate video quality, continuous control, and multi-query cost. We also
+test unseen controls, encoder variants, and reconstruction error. Main results
+use held-out objects or actors, three seeds, and 50 denoising steps.
+
+\subsection{Experimental Setup}
+
+\paragraph{Datasets.}
+\emph{OpenIllumination}~\cite{liu2023openillumination} captures real objects
+under one-light-at-a-time illumination. We fix a 17-frame camera path and
+vary nine measured light positions, normalized to $s\in[0,1]$ by angular arc
+distance. Five object-disjoint folds contain 48/16/16 training, validation,
+and test families each, totaling 80 held-out families.
+
+\emph{MEAD}~\cite{wang2020mead} provides facial videos at three ordinal
+expression intensities (low, medium, high). We align recordings using dynamic
+time warping on mel-frequency cepstral coefficients and their temporal
+derivatives, then form 17-frame families. Four actor-disjoint folds use
+five training, one validation, and two test actors each, totaling 112
+held-out families. MEAD contains identifiable faces and voices. We use this
+existing dataset under its research terms and collect no new participant
+data; no new IRB review or consent process was conducted.
+
+\paragraph{Implementation.}
+We use the Wan2.2-TI2V-5B Video DiT and frozen video
+VAE~\cite{wan2025wan} with the official DiffSynth trainer. All videos have 17 RGB
+frames at $256\times256$ resolution. We train the family encoder and query
+decoder for 8,000 updates, freeze them, and train rank-64 LoRA adapters on
+Video DiT attention and MLP projections for 3,456 updates. Pointwise models
+use the same backbone, optimizer, LoRA rank, number of updates, splits, and
+conditioning. Sampling uses 50 steps with seeds $\{100,200,300\}$.
+
+\paragraph{Baselines.}
+\emph{Pointwise independent} samples each control value with independent
+Gaussian noise. \emph{Pointwise shared-noise} uses the same initial noise for
+all requested values and runs a complete denoising process for each value.
+\emph{Endpoint interpolation} generates the two endpoint videos and linearly
+interpolates their VAE latents. Unless specified otherwise, LFVD denotes
+LFVD-Mix. We also evaluate LFVD-Identity and LFVD-Compact.
+
+\paragraph{Metrics.}
+We report AlexNet LPIPS~\cite{zhang2018lpips}, PSNR, and SSIM against
+measured targets. Control correlation $\rho$ is the Spearman correlation
+between $s$ and the target-projected response; constant outputs receive zero.
+Endpoint amplitude measures response range, and path second variation
+measures smoothness. We use paired object- or actor-level cluster bootstrap
+intervals (95\%). Full settings and per-sample results are in the supplement.
+
+\subsection{Main Results}
+
+\begin{table*}[t]
+\centering
+\caption{\textbf{Results on held-out objects and actors.} Values are averaged
+over five OpenIllumination folds or four MEAD folds, with three seeds and
+50 denoising steps. Trajectories and DiT calls are counted per video family.
+The best and second-best fidelity or ordering values are bold and underlined
+within each dataset.}
+\label{tab:main_results}
+\footnotesize
+\setlength{\tabcolsep}{4.0pt}
+\begin{tabular}{llrrrrrr}
+\toprule
+Dataset & Method & LPIPS$\downarrow$ & PSNR$\uparrow$ & SSIM$\uparrow$ & $\rho\uparrow$ & Traj. & DiT calls \\
+\midrule
+\multirow{4}{*}{Lighting}
+ & Pointwise independent  & \underline{.3979} & \underline{19.69} & \underline{.737} & .468 & 9 & 450 \\
+ & Pointwise shared-noise & .4000 & 19.29 & .731 & .786 & 9 & 450 \\
+ & Endpoint interpolation & .4059 & 19.33 & .727 & \underline{.860} & 2 & 100 \\
+ & LFVD                   & \textbf{.3216} & \textbf{21.14} & \textbf{.753} & \textbf{.933} & \textbf{1} & \textbf{50} \\
+\midrule
+\multirow{4}{*}{MEAD}
+ & Pointwise independent  & \textbf{.1063} & \textbf{22.97} & \textbf{.764} & .577 & 3 & 150 \\
+ & Pointwise shared-noise & .1157 & 22.54 & .753 & \underline{.743} & 3 & 150 \\
+ & Endpoint interpolation & .1152 & \underline{22.91} & \underline{.762} & \textbf{.859} & 2 & 100 \\
+ & LFVD                   & \underline{.1151} & \textbf{22.97} & .760 & .719 & \textbf{1} & \textbf{50} \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+On OpenIllumination (Table~\ref{tab:main_results}), LFVD improves LPIPS
+from .4000 to .3216, PSNR from 19.29 to 21.14 dB, and correlation from
+.786 to .933 relative to shared-noise Pointwise. It uses one trajectory
+for nine values, compared with nine for Pointwise. LFVD's 95\% object-level
+intervals are $[.3096,.3344]$ (LPIPS), $[20.58,21.65]$ dB (PSNR), and
+$[.905,.960]$ (correlation). Shared noise yields higher Pointwise correlation
+than independent noise (.786 versus .468).
+
+On MEAD, LFVD matches shared-noise Pointwise fidelity (.1151 versus .1157
+LPIPS) but has lower correlation (.719 versus .743). Endpoint interpolation
+reaches .859 correlation, despite LFVD's larger endpoint response. These
+results show different fidelity and ordering behavior across control domains.
+Figure~\ref{fig:main_qualitative} shows representative outputs.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/reviewer_defense/main_qualitative.png}
+\caption{\textbf{Generated videos across control values.} Each row shows
+one held-out family at a fixed video frame. OpenIllumination uses nine
+measured lighting positions and MEAD uses three expression levels.
+Outputs are shown without sharpening or spatial alignment. The selected
+MEAD example preserves appearance but shows weaker control ordering.}
+\label{fig:main_qualitative}
+\end{figure*}
+
+\subsection{Generalization to Unseen Controls}
+\label{sec:sparse_control}
+
+We train Pointwise and LFVD-Mix using only three OpenIllumination positions,
+with indices $\{0,4,8\}$, and evaluate all nine measured positions. The six
+intermediate positions are excluded from both codec and diffusion training.
+We use the same five object-disjoint test folds, three seeds, and 50-step
+sampling. All targets are recorded measurements.
+
+\begin{table}[t]
+\centering
+\caption{\textbf{Lighting control with three training positions.} Observed
+values are used in training; unseen values are the six remaining measured
+positions. Results cover five folds, three seeds, and 50 steps.}
+\label{tab:sparse_control}
+\footnotesize
+\setlength{\tabcolsep}{3.2pt}
+\begin{tabular}{llrrr}
+\toprule
+Subset & Method & LPIPS$\downarrow$ & PSNR$\uparrow$ & SSIM$\uparrow$ \\
+\midrule
+Observed & Pointwise shared & .4062 & 18.48 & .7181 \\
+         & LFVD-Mix         & \textbf{.2993} & \textbf{20.99} & \textbf{.7532} \\
+Unseen   & Pointwise shared & .4103 & 18.81 & .7232 \\
+         & LFVD-Mix         & \textbf{.3410} & \textbf{21.22} & \textbf{.7480} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+On unseen positions (Table~\ref{tab:sparse_control}), LPIPS improves from
+.4103 to .3410 and PSNR from 18.81 to 21.22 dB. Across 80 test families,
+20 objects, and three seeds, paired gains are .0693 LPIPS (95\% CI
+$[.0576,.0825]$), 2.41 dB PSNR ($[2.13,2.69]$), and .0248 SSIM
+($[.0191,.0305]$). Correlation over all nine values rises from .604 to
+.991, a gain of .386 ($[.316,.464]$).
+
+\subsection{Family Encoder Ablation}
+\label{sec:encoder_ablation}
+
+\begin{table}[t]
+\centering
+\caption{\textbf{LFVD-Identity versus LFVD-Mix.} Both variants use the
+same query-decoder design, Video DiT training, and sampling protocol.
+Full results use all nine measured positions; sparse-unseen results use
+six positions excluded from training. Correlation uses all nine values.}
+\label{tab:joint_baseline}
+\footnotesize
+\setlength{\tabcolsep}{3.0pt}
+\begin{tabular}{llrrrr}
+\toprule
+Subset & Method & LPIPS$\downarrow$ & PSNR$\uparrow$ & SSIM$\uparrow$ & $\rho\uparrow$ \\
+\midrule
+Full & LFVD-Identity & \textbf{.3202} & \textbf{21.14} & .751 & .929 \\
+     & LFVD-Mix      & .3216 & \textbf{21.14} & \textbf{.753} & \textbf{.933} \\
+Sparse-unseen & LFVD-Identity & .3417 & 21.17 & .747 & \textbf{.992} \\
+              & LFVD-Mix      & \textbf{.3410} & \textbf{21.22} & \textbf{.748} & .991 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:joint_baseline} isolates the effect of the family encoder.
+With all nine lighting positions, Identity and Mix have similar fidelity
+and control correlation. Their LPIPS difference (Identity minus Mix) is
+$-.0014$ with a 95\% object-bootstrap CI of $[-.0058,.0030]$; the
+corresponding intervals for PSNR, SSIM, and correlation also include zero.
+With three training positions, their unseen-control LPIPS difference is
+$+.0007$ ($[-.0015,.0028]$) and the correlation difference is $+.0013$
+($[-.0037,.0069]$). Mix has a small unseen PSNR advantage of .05 dB
+(Identity minus Mix: $-.05$ dB, CI $[-.10,-.002]$).
+
+On MEAD, Identity gives lower LPIPS by .0082 (95\% actor-bootstrap CI
+$[.0002,.0204]$) and higher PSNR by .19 dB ($[.00,.46]$) than Mix.
+The effect of learned temporal mixing is dataset-dependent.
+
+\subsection{Measured Multi-Query Cost}
+\label{sec:cost}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=.72\textwidth]{figures/reviewer_defense/lighting_cost_scaling.pdf}
+\caption{\textbf{Measured inference time versus query count.} Timings use
+50 denoising steps on one RTX 4090 and average three resident-model
+repeats. Query decoding and VAE decoding are included; model loading and
+file serialization are excluded. Pointwise batch-3 is the strongest
+memory-feasible batch. Its fitted curve crosses LFVD at $M=6.64$; the
+measured $M=7$ point confirms the crossover.}
+\label{fig:measured_cost}
+\end{figure*}
+
+\begin{table}[t]
+\centering
+\caption{Measured generation time (seconds) for $M$ requested videos,
+averaged over three repeats.}
+\label{tab:timing}
+\footnotesize
+\setlength{\tabcolsep}{1.5pt}
+\begin{tabular}{lrrrrrrr}
+\toprule
+Method & 1 & 3 & 5 & 7 & 9 & 17 & 33 \\
+\midrule
+Pointwise seq. & \textbf{3.88} & 11.45 & 19.06 & -- & 35.38 & 64.67 & 127.50 \\
+Pointwise batch-3 & 3.90 & \textbf{6.62} & \textbf{11.16} & 16.96 & 19.86 & 37.65 & 72.84 \\
+LFVD & 13.19 & 13.93 & 14.66 & \textbf{15.40} & \textbf{16.15} & \textbf{19.14} & \textbf{25.11} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+As defined in Eq.~\ref{eq:generation_cost}, Pointwise repeats
+$\mathcal C_{\mathrm{diff}}(T_z)$ for each requested video, while LFVD pays
+$\mathcal C_{\mathrm{diff}}(1+J')$ once and adds a query cost for each
+output. We compare both sequential Pointwise and batch-3 Pointwise, the
+strongest memory-feasible baseline. Figure~\ref{fig:measured_cost} and
+Table~\ref{tab:timing} report synchronized wall-clock time on one RTX 4090.
+
+In Lighting, the measured crossover occurs at approximately seven queries:
+LFVD takes 15.40 s at $M=7$, compared with 16.96 s for batch-3 Pointwise.
+At $M=9,17,33$, LFVD is 1.23$\times$, 1.97$\times$, and 2.90$\times$
+faster than batched Pointwise. For MEAD's three control values, LFVD takes
+5.74 s, compared with 6.60 s for batch-3 Pointwise and 11.47 s for
+sequential Pointwise.
+
+\begin{table}[t]
+\centering
+\caption{Analytical transformer cost for 50-step sampling with
+Wan2.2-TI2V-5B. Query-decoder and VAE-decoder operations are excluded.}
+\label{tab:flops}
+\footnotesize
+\setlength{\tabcolsep}{4.2pt}
+\begin{tabular}{lrrr}
+\toprule
+Representation & Latent frames & Tokens & TFLOPs/trajectory \\
+\midrule
+Pointwise video & 5 & 320 & 173.50 \\
+MEAD family & 13 & 832 & 411.52 \\
+Lighting family & 37 & 2,368 & 1,183.59 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:flops} reports transformer FLOPs for patch and text
+projections, attention projections and products, and feed-forward layers.
+Each multiply--accumulate is counted as two FLOPs. The diffusion-only
+crossover is 2.37 queries for MEAD and 6.82 for Lighting. At $M=7$,
+Lighting Pointwise requires 1,214.47 TFLOPs, compared with 1,183.59
+TFLOPs for LFVD; at $M=9$, the ratio is 1.32$\times$. These analytical
+results exclude query and VAE decoding and complement the measured timings.
+The sparse Lighting model uses 13 latent frames, 64.9\% fewer than the
+37-frame dense model. Its LPIPS over all nine queried values is .3271,
+compared with .3216 for the dense model, and its transformer-only crossover
+is 2.37 queries.
+
+\subsection{Ablations and Bottleneck Analysis}
+
+\begin{table}[t]
+\centering
+\caption{\textbf{Source of reconstruction error.} Exact-code results
+bypass diffusion. The first three rows use a 25-step validation ablation;
+Compact rows use 28 latent frames; Compact sampling uses the 50-step,
+three-seed L0 evaluation. Sampled rows use one rank-64 trajectory.}
+\label{tab:bottleneck}
+\footnotesize
+\setlength{\tabcolsep}{3.6pt}
+\begin{tabular}{lrrrr}
+\toprule
+Representation & LPIPS$\downarrow$ & PSNR$\uparrow$ & SSIM$\uparrow$ & $\rho\uparrow$ \\
+\midrule
+Frozen VAE target & .0512 & 33.17 & .899 & -- \\
+Exact family code & .0642 & 32.06 & .893 & 1.000 \\
+Sampled family code & .3365 & 20.86 & .749 & .973 \\
+Compact exact & .0814 & 30.84 & .884 & 1.000 \\
+Compact sampled & .4053 & 21.06 & .725 & .977 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:bottleneck} separates family-code reconstruction from
+Video DiT sampling. Decoding an exact family code gives .0642 LPIPS,
+close to the frozen VAE's .0512, and a correlation of 1.000. Sampling
+the code increases LPIPS to .3365. The main quality loss therefore
+occurs during diffusion of the family representation.
+
+Increasing LoRA rank from 16 to 64 improves sampled LPIPS from .3610 to
+.3365 and correlation from .925 to .973. Increasing the number of
+training families from 1 to 48 improves LPIPS from .450 to .337 and
+correlation from .411 to .973, while exact-code LPIPS stays near .064.
+These results indicate that family-code generation remains the primary
+bottleneck in the evaluated setting.
+
+LFVD-Compact reduces the code to 28 frames, removing 24.3\% of the family
+tokens. Its sampled LPIPS is .4053, compared with .3300 for the matched
+full-length model, while correlation is .977. Its analytical
+Pointwise crossover decreases from 6.82 to 5.09 queries. The shorter
+code reduces theoretical computation at the cost of fidelity.
+
+\subsection{Limitations}
+
+LFVD generates a larger latent representation than a single video and
+requires enough queries to amortize its initial cost. OpenIllumination
+provides controlled multi-view sequences; MEAD provides native videos but
+only three ordinal expression levels, where endpoint interpolation gives
+higher ordering correlation. The comparison between Identity and Mix is
+small and dataset-dependent, and the Compact variant loses fidelity.
+Finally, sampled-code quality remains below exact-code reconstruction,
+leaving family-code diffusion as the main limitation of the current model.

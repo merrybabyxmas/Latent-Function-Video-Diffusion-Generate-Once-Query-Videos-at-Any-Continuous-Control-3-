@@ -1,0 +1,22 @@
+\begin{table}[t]
+\centering
+\caption{\textbf{Coordinate sensitivity on lighting validation.} Exact-code
+and sampled-code LPIPS use the same decoder. Sampling uses 25 steps and one
+seed; these values are not the main test results. The main setting is retained
+without claiming that it wins this sweep.}
+\label{tab:coordinate_ablation}
+\scriptsize
+\setlength{\tabcolsep}{3.2pt}
+\renewcommand{\arraystretch}{1.12}
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lcccc@{}}
+\toprule
+Coordinate & Scale & Exact $\downarrow$ & Sampled $\downarrow$ & $\rho\uparrow$\\
+\midrule
+None & -- & 0.0642 & 0.3351 & 0.9531 \\
+Nonlinear (main) & 0.25 & 0.0642 & 0.3365 & 0.9729 \\
+Nonlinear & 0.50 & 0.0642 & 0.3341 & 0.9875 \\
+Nonlinear & 1.00 & 0.0642 & 0.3338 & 0.9771 \\
+Linear & 0.25 & 0.0642 & 0.3242 & 0.9938 \\
+\bottomrule
+\end{tabular*}
+\end{table}

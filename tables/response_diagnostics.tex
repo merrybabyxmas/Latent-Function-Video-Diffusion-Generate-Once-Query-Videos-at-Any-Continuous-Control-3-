@@ -1,0 +1,22 @@
+\begin{table}[t]
+\centering
+\caption{Additional response diagnostics reproduced from the final export.
+The path diagnostic is reported independently of reconstruction fidelity.}
+\label{tab:response_diagnostics}
+\scriptsize\setlength{\tabcolsep}{3pt}
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}llcc@{}}
+\toprule
+Dataset & Method & Projected $\rho\uparrow$ & Path $\downarrow$\\
+\midrule
+Lighting & Pointwise (independent) & 0.4660 & 0.21041 \\
+ & Pointwise (shared) & 0.7859 & 0.01694 \\
+ & Endpoint interp. & 0.8598 & 0.00935 \\
+ & LFVD & 0.9320 & 0.03988 \\
+\midrule
+MEAD & Pointwise (independent) & 0.5774 & 0.26218 \\
+ & Pointwise (shared) & 0.7426 & 0.17371 \\
+ & Endpoint interp. & 0.8586 & 0.01803 \\
+ & LFVD & 0.7188 & 0.24840 \\
+\bottomrule
+\end{tabular*}
+\end{table}

@@ -1,0 +1,26 @@
+\begin{abstract}
+Video diffusion models support continuous control over video attributes,
+such as motion intensity and camera speed.
+Conventional models require a separate denoising process for each
+control value, even when the resulting videos share much of their
+visual content. We refer to this approach as \emph{pointwise generation}.
+We introduce \textbf{Latent-Function Video Diffusion (LFVD)}, a framework
+that generates a shared latent representation of videos across a
+continuous control range using a single diffusion process.
+A lightweight query decoder then produces a complete video at any
+requested control value without additional denoising.
+LFVD learns this representation by encoding videos captured at different
+control values and training the query decoder to reconstruct their video
+latents. A pretrained video diffusion transformer subsequently learns
+to generate the shared representation using standard flow matching.
+Experiments on lighting and facial-expression control demonstrate
+that LFVD generates multiple videos with competitive visual quality
+using a single diffusion process. LFVD improves video quality and
+control consistency in lighting tasks, including at unseen control
+values, while maintaining comparable video quality in facial-expression
+generation. Although control consistency varies across tasks, LFVD
+reduces generation time when multiple control values are requested.
+These results highlight the potential of shared latent representations
+for efficient and continuous video generation.
+
+\end{abstract}

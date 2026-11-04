@@ -1,0 +1,8 @@
+Canonical manuscript baseline:
+C:/Users/MLLAB/Downloads/Latent_Function_Video_Diffusion__Generate_Once__Query_Videos_at_Any_Continuous_Control__2_.zip
+
+SHA-256:
+CFC36601282D48883AC3701205F19A692485C7A286789E10FEA36B464F42A175
+
+This directory is the revision workspace derived from that ZIP. Experimental
+results are imported only after checking them against archived CSV/JSON files.

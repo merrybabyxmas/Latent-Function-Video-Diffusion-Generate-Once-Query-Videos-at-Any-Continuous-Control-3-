@@ -1,0 +1,27 @@
+\begin{table}[t]
+\centering
+\caption{\textbf{Encoder instances on four actor-disjoint MEAD folds.}
+Means cover 112 held-out families, three seeds, and 50 diffusion steps.
+The final row reports LFVD-Identity minus LFVD-Mix with a 95\% paired
+actor-bootstrap interval.}
+\label{tab:joint_concat_mead4fold}
+\scriptsize
+\setlength{\tabcolsep}{2.0pt}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{lrrrr}
+\toprule
+Method & LPIPS$\downarrow$ & PSNR$\uparrow$ & SSIM$\uparrow$ & $\rho\uparrow$ \\
+\midrule
+Pointwise-SN & .1157 & 22.54 & .7534 & .743 \\
+Endpoint interp. & .1152 & 22.91 & .7624 & \textbf{.859} \\
+LFVD-Mix & .1151 & 22.97 & .7597 & .719 \\
+LFVD-Identity & \textbf{.1069} & \textbf{23.16} & \textbf{.7656} & .683 \\
+\midrule
+$\Delta$ Identity$-$Mix
+& $-.0082$ & $+.19$ & $+.0059$ & $-.036$ \\
+95\% CI
+& $[-.0204,-.0002]$ & $[.00,.46]$ & $[-.0003,.0158]$ & $[-.097,.018]$ \\
+\bottomrule
+\end{tabular}
+}
+\end{table}

@@ -1,0 +1,277 @@
+\section{Implementation and Evaluation Details}
+\label{sec:supp_impl}
+\paragraph{Family representation.}
+The active encoder is a dense temporal--control mixer, not a control-wise
+attention-pooling module. The observed controls are sorted by their known
+coordinates before encoding. Their generated-frame latents receive a
+channel-wise control embedding with width 128 and scale 0.25, and are placed
+along an extended temporal axis. A learned square matrix mixes that entire
+axis. VAE channels and spatial coordinates are preserved. The generated state
+is one tensor with a locked reference prefix; no group of output frames is
+required to equal a particular control video.
+
+The direct query decoder uses a scalar hypernetwork with hidden width 128
+and four residual blocks containing layer normalization, SiLU, and linear
+layers. Its output generates a temporal weight matrix of size
+$4\times J$ and a bias of size $48\times4$, where $J=36$ for lighting and
+$J=12$ for MEAD. The matrix is scaled by $J^{-1/2}$ and applied to the sampled
+code suffix at each channel and spatial location. The same observed reference
+is prepended to every queried latent. This decoder is continuous in its scalar
+input; its output need not be monotonic under an external semantic metric.
+
+\paragraph{Optimization.}
+The codec uses AdamW at learning rate $2\times10^{-4}$, zero weight decay,
+and cosine decay to $2\times10^{-5}$. Training uses one complete family per
+batch and 8,000 steps, with validation every 500 steps. The selected codec is
+fixed before the flow model is trained. DiT adaptation uses LoRA rank 64 on
+attention query, key, value, output, and two feed-forward projections, learning
+rate $10^{-4}$, zero weight decay, and training seed 1234. The number of
+optimizer updates is matched between LFVD and Pointwise, not the number
+of processed latent tokens. Sampling uses three fixed seeds, 50 steps, and
+no extra classifier-free guidance evaluation.
+
+\paragraph{LFVD-Identity protocol.}
+LFVD-Identity fixes the main-paper family mixer to $\lambda=0$ and $P_\phi=I$.
+It uses the same measured families, frozen VAE, Video DiT,
+rank-64 LoRA targets, optimizer, update count, sampling steps, and random
+seeds as LFVD-Mix. Its code is formed by directly packing the common reference
+and all generated-frame latents in control order.  It removes the learned
+coordinate embedding and square family mixer, but trains the same
+scalar-conditioned reader with latent $L_1$ reconstruction.  The full-grid
+comparison uses all measured controls during codec and flow training.  In the
+sparse-control comparison, both LFVD-Identity and LFVD-Mix see only controls
+$\{0,4,8\}$ and are evaluated at all nine official light positions.  Thus the
+variant tests family-valued generation and learned post-hoc querying without
+learned family-coordinate mixing; it is not a Pointwise sampler.
+Every full-grid method is evaluated on the same locked test records in each
+fold; sparse-control methods are also re-evaluated on the same locked test
+records. Separate validation records agree closely.
+
+\paragraph{Lighting coordinates.}
+The nine measured controls have official light IDs
+$82,81,66,64,62,61,43,60,77$, respectively. Their normalized arc coordinates
+are
+\begin{equation*}
+\begin{split}
+\{&0.0000000,0.1335363,0.2278718,\\
+  &0.3818399,0.5294032,0.6233193,\\
+  &0.7665081,0.9198963,1.0000000\}.
+\end{split}
+\end{equation*}
+Each object contributes four camera windows. The five cyclic folds test
+object groups 1--4, 5--8, 9--12, 13--16, and 17--20, with the next group used
+for validation and the remaining three groups used for training. Each object
+is tested once.
+
+\paragraph{MEAD folds.}
+The actor-disjoint test groups are (M003, M005), (M007, M009), (M011, W036),
+and (W039, W040). Validation actors are M007, M011, W039, and M003,
+respectively; all remaining actors form the corresponding training split.
+Each actor contributes the angry and happy emotions at utterances
+001, 002, 003, 007, 008, 009, and 015. The evaluated artifacts use the final
+audio-DTW-aligned family release. All methods consume the same aligned
+family targets and the same reference. Quantitative fidelity uses only the
+three measured levels; a dense slider visualization would not add new
+measured targets.
+
+\section{Aggregate Uncertainty and Response Diagnostics}
+\label{sec:supp_uncertainty}
+We recompute paired intervals from the final per-family export, grouping by
+object for OpenIllumination and actor for MEAD. For each metric and method,
+we first average the families and three seeds within a split unit. We then
+resample the 20 objects or eight actors with replacement 10,000 times and
+compute the paired difference to shared-noise Pointwise. The 2.5th and
+97.5th percentiles form the reported interval. This preserves within-unit
+dependence and does not treat camera windows, utterances, or sampling seeds
+as independent subjects. The intervals condition on the fitted checkpoints;
+they do not include variation from retraining the models.
+
+\input{tables/paired_ci}
+
+Table~\ref{tab:paired_ci} shows a consistent lighting improvement in
+LPIPS, PSNR, SSIM, and response correlation against the shared-noise
+Pointwise. For MEAD, the intervals include zero for these four metrics, so we
+report competitive mean fidelity without asserting a statistically resolved
+advantage. Only eight actors contribute to these MEAD intervals.
+
+\input{tables/joint_concat_5fold_ci}
+
+Table~\ref{tab:joint_concat_5fold_ci} separates the general family-valued
+benefit from encoder effects. Native-length full-grid and sparse test results
+are unresolved overall; sparse unseen PSNR has a tiny paired advantage for
+LFVD-Mix. The raw per-family and per-seed values remain in the accompanying
+result package.
+
+\input{tables/joint_concat_mead4fold}
+
+Table~\ref{tab:joint_concat_mead4fold} provides the corresponding dynamic-video
+comparison. LFVD-Identity improves mean LPIPS and PSNR over LFVD-Mix, with paired
+actor-bootstrap intervals excluding zero, while SSIM and control ordering are
+unresolved. This reinforces the interpretation of direct packing as a strong
+family-valued encoder.
+
+\input{tables/response_diagnostics}
+
+The exported response-path diagnostic is recorded as \texttt{path\_jerk} in
+the experiment files. We reproduce the aggregate values in
+Table~\ref{tab:response_diagnostics} without identifying them with physical
+motion jerk. The separately reported projected-response correlation compares
+generated responses with real target responses, while the main-paper
+correlation compares them with the requested scalar coordinates. Endpoint
+interpolation has the lowest path diagnostic in both datasets. A smooth path
+can also arise when appearance or response varies too little, so this measure
+is not used alone as evidence of successful control.
+
+\section{Representation and Training-Family Scaling}
+\label{sec:supp_scaling}
+The completed scaling study uses nested training sets of 1, 2, 4, 8, 16, 32, and
+48 lighting families and the same 16-family L0 validation split. The recorded
+protocol uses 8,000 codec steps and 3,456 flow updates, a 25-step sampler,
+and seed 100. The 48-family row reuses the selected full-setting evaluation.
+The 32-family entry is completed in the final ablation export. These are validation analyses,
+not additional held-out test results.
+
+\input{tables/family_scaling}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/family_scaling.pdf}
+\caption{\textbf{Completed family-scaling study.} Exact-code reconstruction
+is nearly unchanged, while sampled-code LPIPS improves as more training
+families are supplied. This distinguishes family reconstruction from
+conditional generation under the recorded validation protocol.}
+\label{fig:family_scaling}
+\end{figure}
+
+The nearly constant exact-code result indicates that reconstruction alone
+is not a reliable proxy for generative quality in this study. It does not
+establish an information-theoretic capacity limit or rule out dependence on
+the coordinate and training schedule. The completed coordinate comparison below shows that the retained nonlinear setting is not uniformly best across validation metrics.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/call_scaling.pdf}
+\caption{\textbf{Call-count scaling, not wall-clock timing.} With a fixed
+50-step sampler and no classifier-free guidance branch, Pointwise uses
+$50M$ transformer calls and LFVD uses 50 family-code calls. The latter
+process a longer token sequence. Query and VAE costs are not represented on
+this axis.}
+\label{fig:call_scaling}
+\end{figure}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/fig_lighting_full.pdf}
+\caption{\textbf{All measured lighting controls at one camera position.}
+The fixed lighting example is the source export's median-LPIPS selection in
+fold L4. Each row uses the same camera index 8. Interpolation is based on
+two generated endpoints; LFVD's query is learned directly.}
+\label{fig:lighting_full}
+\end{figure*}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/fig_mead_temporal.pdf}
+\caption{\textbf{Native temporal frames at measured expression levels.}
+Each group of three columns shows the same actor, utterance, seed, and
+speech-frame position at the three measured controls. The common reference
+frame is not displayed. These crops show actual outputs and do not serve as
+ground truth at an unobserved intensity.}
+\label{fig:mead_temporal}
+\end{figure*}
+
+
+For a fixed trained family representation, increasing the number of requested
+outputs does not change its denoising trajectory. The native family-code
+sizes are 7.4 times (lighting) and 2.6 times (MEAD) the number of elements in
+one ordinary five-frame latent, including their reference prefixes. These
+ratios describe tensor sizes only.  The main paper therefore reports both
+synchronized wall-clock measurements and a hardware-independent dense-matmul
+count instead of converting call counts into a claimed speedup.
+
+\paragraph{Timing protocol.}
+All latency measurements use one RTX~4090, resident model weights, BF16, and
+a 50-step sampler.  We synchronize CUDA immediately before and after each
+timed region, discard setup and warm-up, and average three repeats.  The timed
+region includes the continuous query and frozen-VAE decoding but excludes
+model loading and file serialization.  Pointwise is reported sequentially
+and with the strongest memory-feasible batch of three.  LFVD samples one
+family code and then evaluates and decodes all requested controls.  The
+reported crossover is fitted from the measured multi-query curve; it is not
+inferred from trajectory counts.
+
+\paragraph{Analytical transformer work.}
+The FLOP audit uses the locked Wan2.2-TI2V-5B configuration and counts dense
+matrix multiplications in patch projection, 30 transformer blocks,
+self-attention and cross-attention projections and attention products,
+feed-forward projections, text projection, and the output head. One
+multiply--accumulate is two FLOPs.  Layer normalization, elementwise
+activations, the lightweight query decoder, and VAE decoding are excluded;
+their device-dependent contribution is represented by the wall-clock test.
+For latent lengths 5, 13, and 37, the corresponding transformer token counts
+are 320, 832, and 2,368 at the recorded spatial resolution.
+
+\section{Completed Lighting Ablations}
+\label{sec:supp_full_ablations}
+All ablations in this section use the fixed L0 lighting validation split.
+The final export freezes the 3,456-update flow training schedule, a
+25-step sampler, seed 100, and the same frozen VAE. The following tables
+are separate from the three-seed, 50-step object-disjoint main evaluation.
+
+\input{tables/coordinate_ablation}
+The linear coordinate at scale 0.25 attains sampled LPIPS 0.3242 and
+response $\rho=0.9938$, above the retained nonlinear scale-0.25 setting
+(0.3365 and 0.9729). No claim is made that the nonlinear coordinate is
+uniquely optimal. Exact-code LPIPS is nearly identical across variants.
+
+\input{tables/capacity_ablation}
+Rank-64 LoRA yields lower sampled LPIPS (0.3365) than rank-16 (0.3610)
+at the recorded training budget. The narrower 24-channel family code is
+not directly compatible with the frozen 48-channel query interface;
+no quality metric is reported for that candidate.
+
+\input{tables/coordinate_compression}
+A non-square LFVD-Compact encoder can change the code's temporal dimension.
+The 28-frame code retains exact-code LPIPS .0814 and perfect
+ordering while using 75.7\% of the native 37-frame tokens.  More aggressive
+compression preserves order longer than texture: 19 frames still gives
+$\rho=1.0$ but degrades LPIPS to .1065.  These are representation-oracle
+results.  We therefore run the 28-frame candidate through the unchanged raw
+flow objective and 50-step, three-seed sampler.  Its sampled LPIPS is .4053,
+PSNR is 21.06 dB, and control correlation is .977, compared with .4228,
+18.57 dB, and .671 for matched L0 Pointwise shared-noise.  The candidate passes
+the predeclared quality-and-control gate; no sampled-code repair or auxiliary
+loss is used. On the same L0 record, full-length LFVD-Mix reaches .3300 LPIPS,
+quantifying the fidelity cost of the shorter code. Its analytical 50-step DiT
+cost is 883.87 TFLOPs versus
+1183.59 TFLOPs for the 37-frame representation, moving the dense-matmul
+crossover against a 5-frame Pointwise trajectory from 6.82 to 5.09 queries.
+These analytical counts do not replace the measured timing experiment in the
+main paper.
+
+\input{tables/sparse_ci}
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.97\textwidth]{figures/fig_sparse_qualitative.pdf}
+\caption{\textbf{Sparse-control illumination at measured but unobserved training positions.}
+Only three light positions (0, 4, 8) appear in training; the four shown columns are unseen. The first row shows real measured targets,
+the second row shared-noise Pointwise, and the third row LFVD-Mix, all at
+one matched validation family. Neither result is generated ground truth.}
+\label{fig:sparse_qualitative}
+\end{figure*}
+
+A single validation family can illustrate content and shading changes but
+is not a substitute for the aggregate paired results in
+the main-paper sparse-control table. The sparse-control query
+is evaluated against original measured photographs, never interpolated
+or model-generated supervision.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/fig_bottleneck_ablation.pdf}
+\caption{\textbf{Bottleneck decomposition} on the locked lighting validation
+fold: frozen VAE reconstruction, query from an exact family code, and
+query from a DiT-sampled family code. Lower LPIPS is better; bars show
+measured averages and are not bootstrap intervals.}
+\label{fig:bottleneck_ablation}
+\end{figure}

@@ -1,0 +1,27 @@
+Canonical source: user-supplied ZIP
+Latent_Function_Video_Diffusion__Generate_Once__Query_Videos_at_Any_Continuous_Control__2_.zip
+
+Source ZIP SHA-256:
+CFC36601282D48883AC3701205F19A692485C7A286789E10FEA36B464F42A175
+
+Verification date: 2026-11-03 (Asia/Seoul)
+main.tex: clean independent compile succeeded; 11 PDF pages, including
+8 scientific pages, the LLM Usage Statement, and two reference pages.
+supplement.tex: clean independent compile succeeded; 6 PDF pages.
+Latest sparse-test and encoder-ablation values were checked against the
+immutable CSV/JSON records listed in REVISION_20261103.md.
+Final consistency polish adds MEAD encoder CIs, the matched full-length compact
+comparison, and the sparse 13-frame quality/crossover statement.
+LFVD-Identity is presented only through its exact Eq. 4 specialization
+(lambda = 0, P_phi = I); research-history wording was removed. Public artifact
+READMEs document joint_concat_learned_query = LFVD-Identity and
+lfvd = LFVD-Mix while preserving immutable result keys and hashes.
+The Method section is generalized over encoder output length J': Identity,
+Mix, Compact, and compatible future family encoders share one LFVD definition,
+reader, family-code diffusion objective, and query-time inference path.
+Figure 2(a) was regenerated with a reproducible TikZ overlay: frozen VAE
+mathcal E -> generic family encoder E_phi -> query decoder -> L_codec. No
+L_rec + L_fm sum remains, and the source plus original raster are archived.
+Visual verification: all 17 rendered pages inspected; no clipping, overlap,
+broken figure, or unreadable table was found.
+PDF metadata: author, title, and subject fields are empty.

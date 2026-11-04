@@ -1,0 +1,29 @@
+\begin{table*}[t]
+\centering
+\caption{\textbf{Main held-out results under the same denoising-step setting.}
+LFVD denotes LFVD-Mix. All trajectories use 50 steps. Runs and Calls are per complete measured-control
+family: nine outputs for lighting and three for MEAD. Calls do not normalize
+for the longer LFVD token sequence and are not a latency measurement.
+Bold marks the best unrounded value within each dataset.}
+\label{tab:main_results}
+\small
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.10}
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}llrrcccc@{}}
+\toprule
+&&\multicolumn{2}{c}{\textbf{Sampling work}}&\multicolumn{3}{c}{\textbf{Video fidelity}}&\textbf{Control}\\
+\cmidrule(lr){3-4}\cmidrule(lr){5-7}\cmidrule(l){8-8}
+Dataset & Method & Runs $\downarrow$ & Calls $\downarrow$ & LPIPS $\downarrow$ & PSNR $\uparrow$ & SSIM $\uparrow$ & $\rho\uparrow$\\
+\midrule
+OpenIllumination & Pointwise (independent) & 9 & 450 & 0.3979 & 19.69 & 0.7373 & 0.4676 \\
+ & Pointwise (shared noise) & 9 & 450 & 0.4000 & 19.29 & 0.7306 & 0.7865 \\
+ & Endpoint interpolation & 2 & 100 & 0.4059 & 19.33 & 0.7268 & 0.8598 \\
+ & \textbf{LFVD (ours)} & \textbf{1} & \textbf{50} & \textbf{0.3216} & \textbf{21.14} & \textbf{0.7526} & \textbf{0.9326} \\
+\midrule
+MEAD & Pointwise (independent) & 3 & 150 & \textbf{0.1063} & \textbf{22.97} & \textbf{0.7643} & 0.5774 \\
+ & Pointwise (shared noise) & 3 & 150 & 0.1157 & 22.54 & 0.7534 & 0.7426 \\
+ & Endpoint interpolation & 2 & 100 & 0.1152 & 22.91 & 0.7624 & \textbf{0.8586} \\
+ & \textbf{LFVD (ours)} & \textbf{1} & \textbf{50} & 0.1151 & 22.97 & 0.7597 & 0.7188 \\
+\bottomrule
+\end{tabular*}
+\end{table*}
