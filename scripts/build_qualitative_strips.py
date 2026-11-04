@@ -28,7 +28,7 @@ JOBS = (
     ("mead_M0_f007_s100", (0, 2, 3, 4), (1,)),           # method comparison, s=.5
     ("lighting_L3_f010_s100", (4,), (0, 4, 8)),          # Lighting sweep, object 318
     ("lighting_L3_f008_s100", (4,), (0, 4, 8)),          # Lighting sweep, object 308
-    ("mead_M1_f006_s100", (4,), (0, 1, 2)),              # MEAD sweep, M007-angry-015
+    ("mead_M3_f006_s100", (4,), (0, 1, 2)),              # MEAD sweep, W039-angry-015
     ("mead_M2_f010_s100", (4,), (0, 1, 2)),              # MEAD sweep, M011-happy-007
 )
 

@@ -60,10 +60,10 @@
   "mead_control": [
     {
       "dataset": "MEAD",
-      "fold": "M1",
+      "fold": "M3",
       "seed": 100,
       "family_index": 6,
-      "family_id": "M007-angry-015"
+      "family_id": "W039-angry-015"
     },
     {
       "dataset": "MEAD",

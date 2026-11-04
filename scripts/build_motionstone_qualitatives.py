@@ -42,7 +42,7 @@ LIGHTING_EXAMPLES = (
     Example("Lighting", "L3", 100, 8, "308"),
 )
 MEAD_EXAMPLES = (
-    Example("MEAD", "M1", 100, 6, "M007-angry-015"),
+    Example("MEAD", "M3", 100, 6, "W039-angry-015"),
     Example("MEAD", "M2", 100, 10, "M011-happy-007"),
 )
 
