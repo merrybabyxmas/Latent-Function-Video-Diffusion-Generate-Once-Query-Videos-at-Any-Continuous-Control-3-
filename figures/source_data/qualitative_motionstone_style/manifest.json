@@ -1,0 +1,106 @@
+{
+  "protocol": "Latest 50-step held-out evaluation, seed 100; deterministic crop only.",
+  "pixel_processing": "GIF cell crop and Lanczos resize for layout; no sharpening, alignment, or color correction.",
+  "source_root": "Source crops checked into this directory.",
+  "gif_geometry": {
+    "Lighting": {
+      "label_width": 300,
+      "header": 62,
+      "cell": 128,
+      "controls": 9,
+      "methods": 5
+    },
+    "MEAD": {
+      "label_width": 300,
+      "header": 62,
+      "cell": 192,
+      "controls": 3,
+      "methods": 5
+    },
+    "method_rows": {
+      "0": "Target",
+      "1": "Pointwise independent",
+      "2": "Pointwise shared-noise",
+      "3": "Endpoint latent interpolation",
+      "4": "LFVD"
+    }
+  },
+  "method_comparison": [
+    {
+      "dataset": "Lighting",
+      "fold": "L3",
+      "seed": 100,
+      "family_index": 13,
+      "family_id": "335"
+    },
+    {
+      "dataset": "MEAD",
+      "fold": "M0",
+      "seed": 100,
+      "family_index": 7,
+      "family_id": "M003-happy-008"
+    }
+  ],
+  "lighting_control": [
+    {
+      "dataset": "Lighting",
+      "fold": "L3",
+      "seed": 100,
+      "family_index": 10,
+      "family_id": "318"
+    },
+    {
+      "dataset": "Lighting",
+      "fold": "L3",
+      "seed": 100,
+      "family_index": 8,
+      "family_id": "308"
+    }
+  ],
+  "mead_control": [
+    {
+      "dataset": "MEAD",
+      "fold": "M1",
+      "seed": 100,
+      "family_index": 6,
+      "family_id": "M007-angry-015"
+    },
+    {
+      "dataset": "MEAD",
+      "fold": "M2",
+      "seed": 100,
+      "family_index": 10,
+      "family_id": "M011-happy-007"
+    }
+  ],
+  "temporal_frames": [
+    4,
+    8,
+    12,
+    16
+  ],
+  "lighting_controls": {
+    "indices": [
+      0,
+      4,
+      8
+    ],
+    "labels": [
+      "s=0.000",
+      "s=0.529",
+      "s=1.000"
+    ]
+  },
+  "mead_controls": {
+    "indices": [
+      0,
+      1,
+      2
+    ],
+    "labels": [
+      "s=0.0",
+      "s=0.5",
+      "s=1.0"
+    ]
+  }
+}

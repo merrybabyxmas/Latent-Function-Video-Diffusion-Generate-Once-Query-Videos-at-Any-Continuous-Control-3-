@@ -200,6 +200,35 @@ family code and then evaluates and decodes all requested controls.  The
 reported crossover is fitted from the measured multi-query curve; it is not
 inferred from trajectory counts.
 
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/reviewer_defense/lighting_cost_scaling.pdf}
+\caption{\textbf{Measured inference time versus query count.} Timings use
+50 denoising steps on one RTX 4090 and average three resident-model repeats.
+Query and VAE decoding are included. Pointwise batch-3 is the strongest
+memory-feasible batch; the measured $M=7$ point confirms the fitted crossover
+at $M=6.64$.}
+\label{fig:supp_measured_cost}
+\end{figure}
+
+\begin{table}[t]
+\centering
+\caption{Measured generation time (seconds) for $M$ requested videos,
+averaged over three repeats.}
+\label{tab:supp_timing}
+\footnotesize
+\setlength{\tabcolsep}{1.5pt}
+\begin{tabular}{lrrrrrrr}
+\toprule
+Method & 1 & 3 & 5 & 7 & 9 & 17 & 33 \\
+\midrule
+Pointwise seq. & \textbf{3.88} & 11.45 & 19.06 & -- & 35.38 & 64.67 & 127.50 \\
+Pointwise batch-3 & 3.90 & \textbf{6.62} & \textbf{11.16} & 16.96 & 19.86 & 37.65 & 72.84 \\
+LFVD & 13.19 & 13.93 & 14.66 & \textbf{15.40} & \textbf{16.15} & \textbf{19.14} & \textbf{25.11} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \paragraph{Analytical transformer work.}
 The FLOP audit uses the locked Wan2.2-TI2V-5B configuration and counts dense
 matrix multiplications in patch projection, 30 transformer blocks,
@@ -210,6 +239,24 @@ activations, the lightweight query decoder, and VAE decoding are excluded;
 their device-dependent contribution is represented by the wall-clock test.
 For latent lengths 5, 13, and 37, the corresponding transformer token counts
 are 320, 832, and 2,368 at the recorded spatial resolution.
+
+\begin{table}[t]
+\centering
+\caption{Analytical transformer cost for 50-step sampling with
+Wan2.2-TI2V-5B. Query-decoder and VAE-decoder operations are excluded.}
+\label{tab:supp_flops}
+\footnotesize
+\setlength{\tabcolsep}{4.2pt}
+\begin{tabular}{lrrr}
+\toprule
+Representation & Latent frames & Tokens & TFLOPs/trajectory \\
+\midrule
+Pointwise video & 5 & 320 & 173.50 \\
+MEAD family & 13 & 832 & 411.52 \\
+Lighting family & 37 & 2,368 & 1,183.59 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \section{Completed Lighting Ablations}
 \label{sec:supp_full_ablations}
@@ -229,6 +276,12 @@ Rank-64 LoRA yields lower sampled LPIPS (0.3365) than rank-16 (0.3610)
 at the recorded training budget. The narrower 24-channel family code is
 not directly compatible with the frozen 48-channel query interface;
 no quality metric is reported for that candidate.
+
+\input{tables/representation_bottleneck}
+Exact-code decoding reaches .0642 LPIPS and perfect ordering, close to the
+frozen-VAE reconstruction floor of .0512. Sampling the same representation
+raises LPIPS to .3365, localizing the principal quality loss to diffusion of
+the family code rather than the query decoder.
 
 \input{tables/coordinate_compression}
 A non-square LFVD-Compact encoder can change the code's temporal dimension.

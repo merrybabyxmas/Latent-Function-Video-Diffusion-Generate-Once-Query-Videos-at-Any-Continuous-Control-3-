@@ -9,7 +9,7 @@ Early models developed spatiotemporal denoising and large-scale video
 synthesis~\cite{ho2022video,singer2022make,ho2022imagen}.
 Latent video diffusion operates on compressed representations, while
 Lumiere and Wan advance spatiotemporal modeling and pretrained video
-generation~\cite{blattmann2023align,bar2024lumiere,wan2025wan}.
+generation~\cite{blattmann2023align,bar2024lumiere,wan2025}.
 Motion-control methods guide generation using trajectories, motion
 fields, and regional constraints~\cite{yin2023dragnuwa,shi2024motioni2v,
 geng2025motionprompting,zhang2025motionpro}.
@@ -17,7 +17,7 @@ Go-with-the-Flow uses warped noise, and TokenMotion separates human
 and camera motion~\cite{burgert2025gowiththeflow,li2025tokenmotion}.
 MotionStone and Mojito control motion intensity, while Text Slider,
 FreeSliders, and TokenDial provide fine-grained attribute
-control~\cite{shi2025motionstone,he2024mojito,chiu2026textslider,
+control~\cite{shi2025motionstone,he2024mojito,chiu2025textslider,
 ezra2025freesliders,liu2026tokendial}.
 
 \subsection{Joint and Function-based Generation}
@@ -29,19 +29,19 @@ relationships among views conditioned on a reference
 image~\cite{shi2024mvdream,liu2024syncdreamer}.
 Functional generative models represent signals over continuous input
 domains. Neural Diffusion Processes model distributions over
-functions~\cite{dutordoir2023neural}.
+functions~\cite{dutordoir2022neural}.
 Score-Based Diffusion Models in Function Space and Continuous-Time
 Functional Diffusion Processes extend diffusion to function-valued
-data~\cite{lim2025score,franzese2023continuous}.
+data~\cite{lim2023score,franzese2023continuous}.
 Functional Diffusion studies continuous signal generation, while
 HyperDiffusion generates neural-field parameters with
-diffusion~\cite{zhang2024functional,erkoc2023hyperdiffusion}.
+diffusion~\cite{zhang2023functional,erkoc2023hyperdiffusion}.
 
 \subsection{Efficient Diffusion Sampling}
 Efficient diffusion sampling methods reduce the computational cost
 of generating samples. DDIM introduces an alternative sampling
 procedure, while progressive distillation trains models to generate
-samples in fewer steps~\cite{song2021denoising,salimans2022progressive}.
+samples in fewer steps~\cite{song2020ddim,salimans2022progressive}.
 Consistency Models and Latent Consistency Models learn consistency
 across noise levels to enable fast sampling~\cite{song2023consistency,
 luo2023latent}. Other practical strategies for generating related
