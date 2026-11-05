@@ -1,0 +1,100 @@
+{
+  "description": "Four-example method grid matching the geometry of MotionStone Fig. 4.",
+  "processing": "center crop to 256x176, Lanczos resize, concatenate; no sharpening, alignment, or color correction",
+  "methods": {
+    "0": "target",
+    "2": "pointwise_shared_noise",
+    "3": "endpoint_interpolation",
+    "4": "lfvd"
+  },
+  "cases": [
+    {
+      "dataset": "Lighting",
+      "fold": "L3",
+      "seed": 100,
+      "family": 13,
+      "family_name": "object 335",
+      "control": 4,
+      "control_value": "0.529",
+      "frames": [
+        4,
+        8,
+        12,
+        16
+      ],
+      "source": "lighting/L3/seed_100/family_013_all_methods.gif",
+      "outputs": [
+        "figures/qualitative/lighting_L3_f013_s100_m0_s04_motionstone.png",
+        "figures/qualitative/lighting_L3_f013_s100_m2_s04_motionstone.png",
+        "figures/qualitative/lighting_L3_f013_s100_m3_s04_motionstone.png",
+        "figures/qualitative/lighting_L3_f013_s100_m4_s04_motionstone.png"
+      ]
+    },
+    {
+      "dataset": "Lighting",
+      "fold": "L3",
+      "seed": 100,
+      "family": 10,
+      "family_name": "object 318",
+      "control": 4,
+      "control_value": "0.529",
+      "frames": [
+        4,
+        8,
+        12,
+        16
+      ],
+      "source": "lighting/L3/seed_100/family_010_all_methods.gif",
+      "outputs": [
+        "figures/qualitative/lighting_L3_f010_s100_m0_s04_motionstone.png",
+        "figures/qualitative/lighting_L3_f010_s100_m2_s04_motionstone.png",
+        "figures/qualitative/lighting_L3_f010_s100_m3_s04_motionstone.png",
+        "figures/qualitative/lighting_L3_f010_s100_m4_s04_motionstone.png"
+      ]
+    },
+    {
+      "dataset": "MEAD",
+      "fold": "M0",
+      "seed": 100,
+      "family": 8,
+      "family_name": "M003 happy-002",
+      "control": 1,
+      "control_value": "0.5",
+      "frames": [
+        2,
+        6,
+        10,
+        14
+      ],
+      "source": "mead/M0/seed_100/family_008_all_methods.gif",
+      "outputs": [
+        "figures/qualitative/mead_M0_f008_s100_m0_s01_motionstone.png",
+        "figures/qualitative/mead_M0_f008_s100_m2_s01_motionstone.png",
+        "figures/qualitative/mead_M0_f008_s100_m3_s01_motionstone.png",
+        "figures/qualitative/mead_M0_f008_s100_m4_s01_motionstone.png"
+      ]
+    },
+    {
+      "dataset": "MEAD",
+      "fold": "M0",
+      "seed": 200,
+      "family": 20,
+      "family_name": "M005 angry-015",
+      "control": 1,
+      "control_value": "0.5",
+      "frames": [
+        1,
+        7,
+        12,
+        16
+      ],
+      "source": "mead/M0/seed_200/family_020_all_methods.gif",
+      "outputs": [
+        "figures/qualitative/mead_M0_f020_s200_m0_s01_motionstone.png",
+        "figures/qualitative/mead_M0_f020_s200_m2_s01_motionstone.png",
+        "figures/qualitative/mead_M0_f020_s200_m3_s01_motionstone.png",
+        "figures/qualitative/mead_M0_f020_s200_m4_s01_motionstone.png"
+      ]
+    }
+  ]
+}

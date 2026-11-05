@@ -106,12 +106,13 @@ LPIPS) but has lower correlation (.719 versus .743). Endpoint interpolation
 reaches .859 correlation, despite LFVD's larger endpoint response. These
 results show different fidelity and ordering behavior across control domains.
 Figure~\ref{fig:response_curves} plots the measured response over $s$.
-Figure~\ref{fig:main_qualitative} compares four held-out MEAD families across
-all three controls at diagnostically selected temporal frames. Endpoint latent
-interpolation can produce soft double facial contours, or ghosting, from
-blending endpoint states; this is most visible for M005 angry-015 in
-Figure~\ref{fig:main_qualitative}(d). The selected frames expose method
-differences, while Table~\ref{tab:main_results} remains the aggregate test.
+Figure~\ref{fig:main_qualitative} compares methods on two held-out Lighting
+objects and two held-out MEAD families across selected temporal frames.
+Endpoint latent interpolation can produce soft double facial contours, or
+ghosting, from blending endpoint states; this is most visible for M005
+angry-015 in Figure~\ref{fig:main_qualitative}(d). The selected examples expose
+method differences, while Table~\ref{tab:main_results} remains the aggregate
+test.
 Figure~\ref{fig:control_sweeps} shows Lighting continua decoded from a single
 LFVD trajectory.
 

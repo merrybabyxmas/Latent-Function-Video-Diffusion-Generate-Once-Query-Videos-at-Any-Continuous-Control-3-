@@ -47,4 +47,15 @@
   \makebox[\qF]{\scriptsize\color{qorange}\boldmath$s{=}0$}\hspace{\qG}%
   \makebox[\qF]{\scriptsize\color{qorange}\boldmath$s{=}0.5$}\hspace{\qG}%
   \makebox[\qF]{\scriptsize\color{qorange}\boldmath$s{=}1$}}\par\nointerlineskip\vspace{1.5pt}}
+% MotionStone-style landscape cells: four 256x176 frames plus 6 px gutters.
+\newcommand{\qsetupwide}[1]{%
+  \setlength{\qW}{#1}%
+  \setlength{\qF}{0.245681\qW}\setlength{\qG}{0.005758\qW}%
+  \setlength{\qH}{0.168906\qW}}
+\newcommand{\qrowtight}[3]{\mbox{\qlab{#1}{#2}\hspace{2pt}#3}\par\nointerlineskip\vspace{1pt}}
+\newcommand{\qframevalues}[4]{\mbox{\hspace*{\dimexpr\qL+2pt\relax}%
+  \makebox[\qF]{\scriptsize\color{qgray}$t{=}{#1}$}\hspace{\qG}%
+  \makebox[\qF]{\scriptsize\color{qgray}$t{=}{#2}$}\hspace{\qG}%
+  \makebox[\qF]{\scriptsize\color{qgray}$t{=}{#3}$}\hspace{\qG}%
+  \makebox[\qF]{\scriptsize\color{qgray}$t{=}{#4}$}}\par\nointerlineskip\vspace{1.5pt}}
 \newcommand{\qpanel}[1]{\begin{minipage}[t]{\dimexpr\qL+2pt+\qW\relax}\offinterlineskip\centering#1\end{minipage}}
