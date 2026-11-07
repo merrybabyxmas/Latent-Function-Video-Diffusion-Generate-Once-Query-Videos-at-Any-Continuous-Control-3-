@@ -1,0 +1,12 @@
+candidate,reference,subset,metric,mean_delta,ci95_low,ci95_high,cluster_unit,clusters,bootstrap_samples
+lfvd,pointwise_control_token_exposure9x,all,lpips,0.009156454873327337,0.004779957527881146,0.013661819811726065,held-out object,20,10000
+lfvd,pointwise_control_token_exposure9x,all,psnr,0.308014287991348,0.16966930704890126,0.43855995470713854,held-out object,20,10000
+lfvd,pointwise_control_token_exposure9x,all,ssim,-0.0013551447885455901,-0.0036066786410002415,0.0008449822171435967,held-out object,20,10000
+lfvd,pointwise_control_token_exposure9x,observed,lpips,0.009809541546403329,0.005270924715344642,0.014499046046322392,held-out object,20,10000
+lfvd,pointwise_control_token_exposure9x,observed,psnr,-0.34910516118040047,-0.47827228696197166,-0.22671156014076885,held-out object,20,10000
+lfvd,pointwise_control_token_exposure9x,observed,ssim,-0.0052134090956921396,-0.007065349777759471,-0.0032992115061238657,held-out object,20,10000
+lfvd,pointwise_control_token_exposure9x,unseen,lpips,0.008829911536789347,0.0040955237435749345,0.013608762546148985,held-out object,20,10000
+lfvd,pointwise_control_token_exposure9x,unseen,psnr,0.6365740125772222,0.4804444445496912,0.7885923722951935,held-out object,20,10000
+lfvd,pointwise_control_token_exposure9x,unseen,ssim,0.0005739873650276857,-0.001974707021856575,0.0030020340977676453,held-out object,20,10000
+lfvd,pointwise_control_token_exposure9x,all,control_spearman,0.021458333333333357,0.011041666666666684,0.0321527777777778,held-out object,20,10000
+lfvd,pointwise_control_token_exposure9x,all,projected_response_spearman,0.021458333333333357,0.011041666666666687,0.03215277777777781,held-out object,20,10000

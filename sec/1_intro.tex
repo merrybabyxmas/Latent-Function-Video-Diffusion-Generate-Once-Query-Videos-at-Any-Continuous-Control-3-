@@ -86,21 +86,25 @@ MEAD provides facial videos at three ordered expression-intensity levels.
 We evaluate on unseen objects and actors and compare with pointwise
 generation and interpolation between endpoint video latents.
 
-In lighting control, LFVD improves LPIPS from 0.4000 to 0.3216, PSNR
-from 19.29 to 21.14 dB, and control correlation from 0.786 to 0.933
-compared with pointwise generation using shared initial noise. LFVD also
-generalizes to control values absent from training: with only three
-measured lighting positions for training, it improves LPIPS from 0.4103
-to 0.3410 at six unseen positions with real measured targets. In
-facial-expression control, LFVD maintains video quality comparable to
-pointwise generation, although endpoint interpolation achieves stronger
-control ordering. Comparisons between LFVD-Identity and LFVD-Mix show
-that direct concatenation matches learned mixing overall and provides
-better fidelity on MEAD. Synchronized timing shows that LFVD becomes
-faster than batched pointwise generation after approximately seven
-lighting queries. Together, these results demonstrate the potential
-of shared latent representations for efficient video generation
-across continuous controls.
+We strengthen Pointwise with an explicit polynomial--Fourier control token
+selected on validation data. At the matched update budget, LFVD improves
+Lighting LPIPS from .3630 to .3216 and PSNR from 19.78 to 21.14 dB, while
+control correlation is tied (.930 versus .933). A separate nine-times-update
+audit narrows or reverses the per-query gap depending on the metric, showing
+that the matched-update advantage partly reflects family-level supervision
+density. The family representation nevertheless provides a distinct
+functional benefit. Relative to real measured query paths, LFVD reduces
+adjacent-step LPIPS error from .0867 to .0303 compared with shared-noise
+Pointwise. On the same sampled family codes, the learned query decoder lowers
+LPIPS from .4074 to .3269 compared with adjacent linear interpolation. With
+three observed Lighting controls, LFVD and an aggressively trained Pointwise
+model trade perceptual fidelity against PSNR and ordering at six measured
+unseen controls. In facial-expression control, LFVD maintains comparable
+fidelity, although endpoint interpolation achieves stronger ordering.
+Synchronized timing shows that LFVD becomes faster than batched Pointwise
+after approximately seven Lighting queries. These results position LFVD as
+an amortized, queryable video-family generator rather than a universal
+per-query quality improvement.
 \paragraph{Contributions.}
 \begin{itemize}
     \item We introduce LFVD, a framework that generates a shared latent
@@ -109,7 +113,12 @@ across continuous controls.
     \item We develop a two-stage training procedure that learns a family
     encoder and query decoder, followed by training a Video DiT using
     standard flow matching.
-    \item We evaluate LFVD on lighting and facial-expression control,
-    demonstrating video quality, generalization to unseen controls,
-    and multi-query efficiency through extensive experiments.
+    \item We show that sampled LFVD codes produce query paths closer to
+    measured continuous families than Pointwise or latent interpolation,
+    and that the learned reader materially outperforms linear interpolation
+    of the same code.
+    \item We evaluate held-out Lighting and facial-expression families,
+    sparse measured controls, exposure, encoder design, and synchronized
+    multi-query cost, including audits that delimit rather than hide the
+    source of the observed gains.
 \end{itemize}

@@ -1,0 +1,38 @@
+{
+  "pointwise_training_controls": [
+    0,
+    4,
+    8
+  ],
+  "test_controls": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "unseen_controls": [
+    1,
+    2,
+    3,
+    5,
+    6,
+    7
+  ],
+  "pointwise_updates": 31104,
+  "pointwise_control_conditioning": "frozen polynomial/Fourier context token plus latent bias",
+  "lfvd_checkpoint": "existing sparse-3 main checkpoint; no retraining",
+  "steps": 50,
+  "seeds": [
+    100,
+    200,
+    300
+  ],
+  "targets": "official measured images only",
+  "selection": "control-token architecture selected on dense L0 validation before test",
+  "split": "five locked object-disjoint test folds"
+}

@@ -2,49 +2,12 @@
 \section{Experiments}
 \label{sec:experiments}
 
-We evaluate video quality, continuous control, and multi-query cost. We also
-test unseen controls, encoder variants, and reconstruction error. Main results
-use held-out objects or actors, three seeds, and 50 denoising steps.
+We evaluate per-query fidelity, functional query-path consistency, and
+multi-query cost. We also test unseen controls, exposure, the query reader,
+encoder variants, and reconstruction error. Main results use held-out objects
+or actors, three seeds, and 50 denoising steps.
 
-\begin{table*}[t]
-\centering
-\caption{\textbf{Results on held-out objects and actors.} Values are averaged
-over five OpenIllumination folds or four MEAD folds, with three seeds and
-50 denoising steps. Trajectories and DiT calls are counted per video family.
-The best and second-best fidelity or ordering values are bold and underlined
-within each dataset.}
-\label{tab:main_results}
-\footnotesize
-\setlength{\tabcolsep}{4.0pt}
-\begin{tabular}{llrrrrrr}
-\toprule
-Dataset & Method & LPIPS$\downarrow$ & PSNR$\uparrow$ & SSIM$\uparrow$ & $\rho\uparrow$ & Traj. & DiT calls \\
-\midrule
-\multirow{4}{*}{Lighting}
- & Pointwise independent  & \underline{.3979} & \underline{19.69} & \underline{.737} & .468 & 9 & 450 \\
- & Pointwise shared-noise & .4000 & 19.29 & .731 & .786 & 9 & 450 \\
- & Endpoint interpolation & .4059 & 19.33 & .727 & \underline{.860} & 2 & 100 \\
- & LFVD                   & \textbf{.3216} & \textbf{21.14} & \textbf{.753} & \textbf{.933} & \textbf{1} & \textbf{50} \\
-\midrule
-\multirow{4}{*}{MEAD}
- & Pointwise independent  & \textbf{.1063} & \textbf{22.97} & \textbf{.764} & .577 & 3 & 150 \\
- & Pointwise shared-noise & .1157 & 22.54 & .753 & \underline{.743} & 3 & 150 \\
- & Endpoint interpolation & .1152 & \underline{22.91} & \underline{.762} & \textbf{.859} & 2 & 100 \\
- & LFVD                   & \underline{.1151} & \textbf{22.97} & .760 & .719 & \textbf{1} & \textbf{50} \\
-\bottomrule
-\end{tabular}
-\end{table*}
-
-\begin{figure*}[t]
-\centering
-\includegraphics[width=.40\textwidth]{figures/fig3a_lighting_response.pdf}\hspace{.06\textwidth}%
-\includegraphics[width=.40\textwidth]{figures/fig3b_mead_response.pdf}
-\caption{\textbf{Measured response over the requested control coordinate.}
-Curves aggregate the held-out Lighting and MEAD evaluations. LFVD queries
-the complete curve after one sampled family code; Pointwise executes a full
-trajectory for every coordinate.}
-\label{fig:response_curves}
-\end{figure*}
+\input{tables/main_results}
 
 \subsection{Experimental Setup}
 
@@ -70,8 +33,16 @@ VAE~\cite{wan2025} with the official DiffSynth trainer. All videos have 17 RGB
 frames at $256\times256$ resolution. We train the family encoder and query
 decoder for 8,000 updates, freeze them, and train rank-64 LoRA adapters on
 Video DiT attention and MLP projections for 3,456 updates. Pointwise models
-use the same backbone, optimizer, LoRA rank, number of updates, splits, and
-conditioning. Sampling uses 50 steps with seeds $\{100,200,300\}$.
+use the same backbone, optimizer, LoRA rank, number of updates, and splits.
+For Lighting, Pointwise receives an eight-dimensional polynomial--Fourier
+encoding of $s$ through zero-initialized latent-bias and context-token
+projections. This design is selected on the L0 validation fold and then frozen
+across test folds. It adds 0.53M parameters to the 161.22M LoRA parameters.
+The LFVD codec has 10.49M parameters and receives $s$ only through its query
+decoder. Richer polynomial--Fourier LFVD query features do not change sampled
+metrics. On MEAD, the token does not improve validation, so we retain the
+stronger scalar-conditioned Pointwise baseline. Sampling uses 50 steps with
+seeds $\{100,200,300\}$.
 
 \paragraph{Baselines.}
 \emph{Pointwise independent} samples each control value with independent
@@ -85,74 +56,91 @@ LFVD-Mix. We also evaluate LFVD-Identity and LFVD-Compact.
 We report AlexNet LPIPS~\cite{zhang2018lpips}, PSNR, and SSIM against
 measured targets. Control correlation $\rho$ is the Spearman correlation
 between $s$ and the target-projected response; constant outputs receive zero.
-Endpoint amplitude measures response range, and path second variation
-measures smoothness. We use paired object- or actor-level cluster bootstrap
-intervals (95\%). Full settings and per-sample results are in the supplement.
+For query paths, we compare generated and measured adjacent-query LPIPS,
+total path length, and second-order RGB variation. The latter two use absolute
+log ratios, so zero is ideal and neither collapse nor excess variation is
+rewarded. We use paired object- or actor-level cluster bootstrap intervals
+(95\%). Full settings and per-sample results are in the supplement.
 
 \subsection{Main Results}
 
 \input{figures/qualitative/fig_method_comparison}
 
 On OpenIllumination (Table~\ref{tab:main_results}), LFVD improves LPIPS
-from .4000 to .3216, PSNR from 19.29 to 21.14 dB, and correlation from
-.786 to .933 relative to shared-noise Pointwise. It uses one trajectory
-for nine values, compared with nine for Pointwise. LFVD's 95\% object-level
-intervals are $[.3096,.3344]$ (LPIPS), $[20.58,21.65]$ dB (PSNR), and
-$[.905,.960]$ (correlation). Shared noise yields higher Pointwise correlation
-than independent noise (.786 versus .468).
+from .3630 to .3216 and PSNR from 19.78 to 21.14 dB relative to the
+strengthened shared-noise Pointwise. The paired differences favor LFVD by
+.0414 LPIPS (95\% CI $[.0316,.0511]$) and 1.36 dB PSNR
+($[1.14,1.61]$). Control correlation is tied: .930 for Pointwise and .933
+for LFVD, with a paired LFVD-minus-Pointwise interval of
+$[-.0208,.0243]$. LFVD uses one trajectory for nine values, compared with
+nine for Pointwise. Endpoint interpolation has the strongest rank ordering,
+but its fidelity is substantially lower.
 
 On MEAD, LFVD matches shared-noise Pointwise fidelity (.1151 versus .1157
 LPIPS) but has lower correlation (.719 versus .743). Endpoint interpolation
 reaches .859 correlation, despite LFVD's larger endpoint response. These
 results show different fidelity and ordering behavior across control domains.
-Figure~\ref{fig:response_curves} plots the measured response over $s$.
 Figure~\ref{fig:main_qualitative} compares methods on two held-out Lighting
 objects and two held-out MEAD families across selected temporal frames.
 Endpoint latent interpolation can produce soft double facial contours, or
 ghosting, from blending endpoint states; this is most visible for M005
 angry-015 in Figure~\ref{fig:main_qualitative}(d). The selected examples expose
 method differences, while Table~\ref{tab:main_results} remains the aggregate
-test.
-Figure~\ref{fig:control_sweeps} shows Lighting continua decoded from a single
+test. The supplement shows additional Lighting continua decoded from a single
 LFVD trajectory.
 
-\input{figures/qualitative/fig_control_sweeps}
+\subsection{Exposure and Functional Query Audits}
+\label{sec:function_audits}
+
+The matched-update comparison does not match the number of control latents
+processed per update: LFVD observes a complete family, whereas Pointwise
+observes one control. We therefore train dense Pointwise for nine times as
+many updates on the scene-disjoint L0 validation split. Pointwise reaches
+.3268 LPIPS and .998 correlation, while LFVD reaches .3365 and .973; LFVD
+remains slightly better in PSNR and SSIM. This single-fold stress test shows
+that the main fidelity gap is not evidence of an unconditional
+representational advantage. It does not alter LFVD's one-trajectory inference
+interface; the complete table is in the supplement.
+
+We next measure whether one sampled code represents the \emph{path} traced by
+the real video family. Table~\ref{tab:query_path} reports target-relative
+errors over nine Lighting queries. LFVD reduces adjacent-step LPIPS error from
+.0867 to .0303 against shared-noise Pointwise. Its path-length and second-order
+variation errors are also lowest. Paired object-bootstrap intervals for all
+three LFVD improvements exclude zero; the supplement provides them. This
+metric is target-relative, so a constant or overly smooth output is penalized
+rather than rewarded.
+
+\input{tables/cross_query_consistency}
+
+Finally, we hold the sampled family code fixed and replace $R_\psi$ with
+piecewise linear interpolation between adjacent packed latent segments. The
+learned reader lowers LPIPS by .0805 ($[.0488,.1132]$) and improves PSNR by
+1.10 dB ($[.11,2.13]$), while preserving essentially identical ordering.
+The gain therefore comes from learned continuous querying, not from sampling
+a different family code; the complete ablation is in the supplement.
 
 \subsection{Generalization to Unseen Controls}
 \label{sec:sparse_control}
 
-We train Pointwise and LFVD-Mix using only three OpenIllumination positions,
-with indices $\{0,4,8\}$, and evaluate all nine measured positions. The six
-intermediate positions are excluded from both codec and diffusion training.
-We use the same five object-disjoint test folds, three seeds, and 50-step
-sampling. All targets are recorded measurements.
+We train both methods using only OpenIllumination indices $\{0,4,8\}$ and
+evaluate all nine measured positions. The six intermediate positions are
+excluded from training, and targets are recorded measurements. To avoid
+repeating the weak-baseline issue, Pointwise receives 31,104 updates, nine
+times the main budget, while LFVD uses the unchanged sparse checkpoint.
+The control-token architecture was fixed before these test runs.
 
-\begin{table}[t]
-\centering
-\caption{\textbf{Lighting control with three training positions.} Observed
-values are used in training; unseen values are the six remaining measured
-positions. Results cover five folds, three seeds, and 50 steps.}
-\label{tab:sparse_control}
-\footnotesize
-\setlength{\tabcolsep}{3.2pt}
-\begin{tabular}{llrrr}
-\toprule
-Subset & Method & LPIPS$\downarrow$ & PSNR$\uparrow$ & SSIM$\uparrow$ \\
-\midrule
-Observed & Pointwise shared & .4062 & 18.48 & .7181 \\
-         & LFVD-Mix         & \textbf{.2993} & \textbf{20.99} & \textbf{.7532} \\
-Unseen   & Pointwise shared & .4103 & 18.81 & .7232 \\
-         & LFVD-Mix         & \textbf{.3410} & \textbf{21.22} & \textbf{.7480} \\
-\bottomrule
-\end{tabular}
-\end{table}
+\input{tables/sparse_control}
 
-On unseen positions (Table~\ref{tab:sparse_control}), LPIPS improves from
-.4103 to .3410 and PSNR from 18.81 to 21.22 dB. Across 80 test families,
-20 objects, and three seeds, paired gains are .0693 LPIPS (95\% CI
-$[.0576,.0825]$), 2.41 dB PSNR ($[2.13,2.69]$), and .0248 SSIM
-($[.0191,.0305]$). Correlation over all nine values rises from .604 to
-.991, a gain of .386 ($[.316,.464]$).
+The result is deliberately mixed. At unseen controls, Pointwise has lower
+LPIPS (.3322 versus .3410), while LFVD has higher PSNR (21.22 versus
+20.58 dB); SSIM is tied. LFVD better preserves global ordering over all nine
+queries (.991 versus .969). Paired object-bootstrap intervals confirm the
+LPIPS difference in favor of Pointwise ($[.0041,.0136]$ for LFVD minus
+Pointwise), the PSNR difference in favor of LFVD ($[.48,.79]$ dB), and the
+ordering difference in favor of LFVD ($[.011,.032]$). Thus LFVD demonstrates
+absolute measured-target generalization, but not uniform superiority over a
+high-exposure Pointwise model.
 
 \subsection{Family Encoder Ablation}
 \label{sec:encoder_ablation}
@@ -168,50 +156,31 @@ reports complete encoder metrics and paired intervals for both datasets.
 \subsection{Measured Multi-Query Cost}
 \label{sec:cost}
 
-As defined in Eq.~\ref{eq:generation_cost}, Pointwise repeats
-$\mathcal C_{\mathrm{diff}}(T_z)$ for each requested video, while LFVD pays
-$\mathcal C_{\mathrm{diff}}(1+J')$ once and adds a query cost for each
-output. We compare both sequential Pointwise and batch-3 Pointwise, the
-strongest memory-feasible baseline. The supplementary timing curve and table
-report synchronized wall-clock time on one RTX 4090.
-
-In Lighting, the measured crossover occurs at approximately seven queries:
-LFVD takes 15.40 s at $M=7$, compared with 16.96 s for batch-3 Pointwise.
-At $M=9,17,33$, LFVD is 1.23$\times$, 1.97$\times$, and 2.90$\times$
-faster than batched Pointwise. For MEAD's three control values, LFVD takes
-5.74 s, compared with 6.60 s for batch-3 Pointwise and 11.47 s for
-sequential Pointwise.
-
-The supplementary FLOP audit reports patch and text projections, attention
-projections and products, and feed-forward layers.
-Each multiply--accumulate is counted as two FLOPs. The diffusion-only
-crossover is 2.37 queries for MEAD and 6.82 for Lighting. At $M=7$,
-Lighting Pointwise requires 1,214.47 TFLOPs, compared with 1,183.59
-TFLOPs for LFVD; at $M=9$, the ratio is 1.32$\times$. These analytical
-results exclude query and VAE decoding and complement the measured timings.
-The sparse Lighting model uses 13 latent frames, 64.9\% fewer than the
-37-frame dense model. Its LPIPS over all nine queried values is .3271,
-compared with .3216 for the dense model, and its transformer-only crossover
-is 2.37 queries.
+As defined in Eq.~\ref{eq:generation_cost}, Pointwise repeats diffusion for
+every requested video, whereas LFVD samples once and adds inexpensive queries.
+Against memory-feasible batch-3 Pointwise on one RTX 4090, the measured
+Lighting crossover is approximately seven queries: 15.40 versus 16.96 s at
+$M=7$. At $M=9,17,33$, LFVD is 1.23$\times$, 1.97$\times$, and
+2.90$\times$ faster. For MEAD's three controls, LFVD takes 5.74 s versus
+6.60 s for batch-3 Pointwise. The supplementary FLOP audit gives
+diffusion-only crossovers of 6.82 queries for dense Lighting and 2.37 for
+MEAD. Sparse Lighting also uses a 13-frame code, versus 37 frames for the
+dense model, with a 2.37-query transformer-only crossover.
 
 \subsection{Ablations and Bottleneck Analysis}
 
-Exact-code decoding reaches .0642 LPIPS and perfect ordering, close to the
-frozen VAE floor of .0512; sampling the same representation raises LPIPS to
-.3365. Family-code diffusion, rather than the query decoder, is therefore
-the main quality bottleneck. Rank, training-family scaling, and coordinate
-ablations support the same conclusion. LFVD-Compact shortens the code from
-37 to 28 frames and moves the analytical crossover from 6.82 to 5.09
-queries, but degrades sampled LPIPS from .3300 to .4053. Complete protocols,
-tables, and qualitative decompositions are provided in the supplement.
+Exact-code LPIPS is .0642, close to the frozen-VAE floor of .0512, whereas
+sampling the same representation gives .3365. Family-code diffusion is thus
+the main bottleneck. LFVD-Compact reduces the analytical crossover from 6.82
+to 5.09 queries but degrades LPIPS from .3300 to .4053. Complete rank,
+scaling, coordinate, and reconstruction ablations are in the supplement.
 
 \subsection{Limitations}
 
-LFVD generates a larger latent representation than a single video and
-requires enough queries to amortize its initial cost. OpenIllumination
-provides controlled multi-view sequences; MEAD provides native videos but
-only three ordinal expression levels, where endpoint interpolation gives
-higher ordering correlation. The comparison between Identity and Mix is
-small and dataset-dependent, and the Compact variant loses fidelity.
-Finally, sampled-code quality remains below exact-code reconstruction,
-leaving family-code diffusion as the main limitation of the current model.
+LFVD's larger latent requires enough queries to amortize its cost.
+OpenIllumination is controlled multi-view data; MEAD has only three ordinal
+levels. Matched updates give LFVD denser supervision, and high-exposure
+Pointwise closes the per-query gap. Sparse controls show a metric trade-off,
+not uniform superiority. Encoder differences are small and dataset-dependent,
+Compact loses fidelity, and sampled family codes remain below exact-code
+reconstruction.

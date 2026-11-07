@@ -1,0 +1,19 @@
+\begin{table}[t]
+\centering
+\caption{\textbf{Target-relative query-path consistency on Lighting.}
+Errors compare each generated nine-query path with its measured target path;
+lower is better. Results use 80 held-out families and seed 100.}
+\label{tab:query_path}
+\scriptsize
+\setlength{\tabcolsep}{2.6pt}
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lrrr@{}}
+\toprule
+Method & Adj. LPIPS MAE & Path log err. & Jerk log err. \\
+\midrule
+Pointwise independent & .1190 & .5100 & .4712 \\
+Pointwise shared      & .0867 & .5866 & .5176 \\
+Endpoint interpolation & .1439 & 1.7460 & 2.1358 \\
+\textbf{LFVD} & \textbf{.0303} & \textbf{.1341} & \textbf{.1588} \\
+\bottomrule
+\end{tabular*}
+\end{table}

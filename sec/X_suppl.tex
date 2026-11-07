@@ -30,6 +30,19 @@ optimizer updates is matched between LFVD and Pointwise, not the number
 of processed latent tokens. Sampling uses three fixed seeds, 50 steps, and
 no extra classifier-free guidance evaluation.
 
+\paragraph{Pointwise control conditioning.}
+For Lighting, the strengthened Pointwise baseline encodes $s$ as
+$[s,s^2,s^3,s^4,\sin(\pi s),\cos(\pi s),\sin(2\pi s),\cos(2\pi s)]$.
+Two zero-initialized projections inject this vector as a latent bias and as an
+additional 4096-dimensional context token through an 8--128--4096 MLP. The
+design is selected on L0 validation before the five test folds are evaluated.
+It adds 529,968 parameters to the 161,218,560 LoRA parameters; the LFVD codec
+has 10,493,040 parameters. On L0 validation the token changes Pointwise from
+.4514 to .3917 LPIPS and raises $\rho$ from .612 to .951. Polynomial--Fourier
+features were also tested in the LFVD query hypernetwork; exact-code metrics
+improved slightly, but sampled metrics were unchanged (.336514 versus .336509
+LPIPS and identical $\rho$). We therefore retain the scalar LFVD query.
+
 \paragraph{LFVD-Identity protocol.}
 LFVD-Identity fixes the main-paper family mixer to $\lambda=0$ and $P_\phi=I$.
 It uses the same measured families, frozen VAE, Video DiT,
@@ -88,11 +101,21 @@ they do not include variation from retraining the models.
 
 \input{tables/paired_ci}
 
-Table~\ref{tab:paired_ci} shows a consistent lighting improvement in
-LPIPS, PSNR, SSIM, and response correlation against the shared-noise
-Pointwise. For MEAD, the intervals include zero for these four metrics, so we
-report competitive mean fidelity without asserting a statistically resolved
-advantage. Only eight actors contribute to these MEAD intervals.
+Table~\ref{tab:paired_ci} shows a consistent Lighting improvement in LPIPS,
+PSNR, and SSIM against the strengthened shared-noise Pointwise, while the
+response-correlation interval includes zero. For MEAD, the intervals include
+zero for all four metrics, so we report competitive mean fidelity without
+asserting a statistically resolved advantage. Only eight actors contribute to
+these MEAD intervals.
+
+\input{tables/exposure_audit}
+
+The nine-times-update Pointwise run is evaluated only on the scene-disjoint L0
+validation fold. Its update multiplier exceeds the family size and is a
+deliberately strong exposure stress test, not a replacement for the locked
+five-fold matched-update protocol. Pointwise wins LPIPS and ordering; LFVD
+wins PSNR and SSIM. The result prevents attributing the main-table fidelity
+gap solely to representation design.
 
 \input{tables/joint_concat_5fold_ci}
 
@@ -110,17 +133,36 @@ actor-bootstrap intervals excluding zero, while SSIM and control ordering are
 unresolved. This reinforces the interpretation of direct packing as a strong
 family-valued encoder.
 
-\input{tables/response_diagnostics}
+\input{tables/cross_query_consistency}
 
-The exported response-path diagnostic is recorded as \texttt{path\_jerk} in
-the experiment files. We reproduce the aggregate values in
-Table~\ref{tab:response_diagnostics} without identifying them with physical
-motion jerk. The separately reported projected-response correlation compares
-generated responses with real target responses, while the main-paper
-correlation compares them with the requested scalar coordinates. Endpoint
-interpolation has the lowest path diagnostic in both datasets. A smooth path
-can also arise when appearance or response varies too little, so this measure
-is not used alone as evidence of successful control.
+The target-relative path metrics use the official nine-control Lighting
+targets and one common sample seed. Adjacent LPIPS error is the mean absolute
+difference between generated and measured adjacent-query LPIPS. Path and jerk
+errors are absolute log ratios of total adjacent LPIPS length and RMS
+second-order RGB variation, respectively. Consequently, a collapsed path has
+large error even if it is smooth. LFVD-minus-shared-Pointwise paired intervals
+are $[-.0621,-.0506]$, $[-.5304,-.3789]$, and $[-.4489,-.2792]$ for the three
+columns in Table~\ref{tab:query_path}.
+
+\input{tables/reader_ablation}
+
+The reader ablation reuses exactly the same sampled LFVD-Identity family code
+for both rows. The adjacent baseline selects the two neighboring packed latent
+segments and linearly interpolates them. The learned reader improves LPIPS by
+.0805 (95\% CI $[.0488,.1132]$), PSNR by 1.10 dB ($[.11,2.13]$), and SSIM by
+.0180 ($[.0016,.0353]$), with nearly identical ordering.
+
+\input{tables/sparse_control_full}
+
+The full sparse-control export includes both observed-control metrics and the
+relative update budgets. It is the same five-fold, three-seed evaluation as
+the compact main-paper table; no validation families are included.
+
+\input{figures/qualitative/fig_control_sweeps}
+
+Figure~\ref{fig:control_sweeps} provides additional held-out Lighting
+continua. Within each panel, every row is decoded from the same sampled family
+code; only the requested physical light coordinate changes.
 
 \section{Representation and Training-Family Scaling}
 \label{sec:supp_scaling}
@@ -286,16 +328,14 @@ the family code rather than the query decoder.
 \input{tables/coordinate_compression}
 A non-square LFVD-Compact encoder can change the code's temporal dimension.
 The 28-frame code retains exact-code LPIPS .0814 and perfect
-ordering while using 75.7\% of the native 37-frame tokens.  More aggressive
+ordering while using 75.7\% of the native 37-frame tokens. More aggressive
 compression preserves order longer than texture: 19 frames still gives
 $\rho=1.0$ but degrades LPIPS to .1065.  These are representation-oracle
 results.  We therefore run the 28-frame candidate through the unchanged raw
-flow objective and 50-step, three-seed sampler.  Its sampled LPIPS is .4053,
-PSNR is 21.06 dB, and control correlation is .977, compared with .4228,
-18.57 dB, and .671 for matched L0 Pointwise shared-noise.  The candidate passes
-the predeclared quality-and-control gate; no sampled-code repair or auxiliary
-loss is used. On the same L0 record, full-length LFVD-Mix reaches .3300 LPIPS,
-quantifying the fidelity cost of the shorter code. Its analytical 50-step DiT
+flow objective and 50-step, three-seed sampler. Its sampled LPIPS is .4053,
+PSNR is 21.06 dB, and control correlation is .977. On the same L0 record,
+full-length LFVD-Mix reaches .3300 LPIPS, quantifying the fidelity cost of the
+shorter code. Its analytical 50-step DiT
 cost is 883.87 TFLOPs versus
 1183.59 TFLOPs for the 37-frame representation, moving the dense-matmul
 crossover against a 5-frame Pointwise trajectory from 6.82 to 5.09 queries.
@@ -303,21 +343,11 @@ These analytical counts do not replace the measured timing experiment in the
 main paper.
 
 \input{tables/sparse_ci}
-\begin{figure*}[t]
-\centering
-\includegraphics[width=0.97\textwidth]{figures/fig_sparse_qualitative.pdf}
-\caption{\textbf{Sparse-control illumination at measured but unobserved training positions.}
-Only three light positions (0, 4, 8) appear in training; the four shown columns are unseen. The first row shows real measured targets,
-the second row shared-noise Pointwise, and the third row LFVD-Mix, all at
-one matched validation family. Neither result is generated ground truth.}
-\label{fig:sparse_qualitative}
-\end{figure*}
-
-A single validation family can illustrate content and shading changes but
-is not a substitute for the aggregate paired results in
-the main-paper sparse-control table. The sparse-control query
-is evaluated against original measured photographs, never interpolated
-or model-generated supervision.
+The sparse-control stress test evaluates original measured photographs, never
+interpolated or model-generated targets. Pointwise uses the frozen control
+token and 31,104 updates; LFVD uses the unchanged sparse checkpoint. The mixed
+LPIPS/PSNR result is therefore reported as a trade-off, not an LFVD quality
+win.
 
 \begin{figure}[t]
 \centering

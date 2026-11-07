@@ -1,0 +1,15 @@
+# LaTeX build intermediates (compiled PDFs remain versioned).
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+
+# Local inspection and script caches.
+tmp/
+*_layout.txt
+__pycache__/
+*.pyc

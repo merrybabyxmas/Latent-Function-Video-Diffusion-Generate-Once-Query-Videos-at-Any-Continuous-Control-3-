@@ -1,0 +1,17 @@
+\begin{table}[t]
+\centering
+\caption{\textbf{Reader ablation on the same sampled sparse family codes.}
+The learned reader and adjacent linear interpolation receive identical LFVD-
+Identity codes. Results cover five folds, three seeds, and 50 steps.}
+\label{tab:reader_ablation}
+\scriptsize
+\setlength{\tabcolsep}{3.1pt}
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lrrrr@{}}
+\toprule
+Reader & LPIPS$\downarrow$ & PSNR$\uparrow$ & SSIM$\uparrow$ & $\rho\uparrow$ \\
+\midrule
+Adjacent linear & .4074 & 20.11 & .7319 & \textbf{.9918} \\
+\textbf{Learned $R_\psi$} & \textbf{.3269} & \textbf{21.20} & \textbf{.7499} & .9902 \\
+\bottomrule
+\end{tabular*}
+\end{table}

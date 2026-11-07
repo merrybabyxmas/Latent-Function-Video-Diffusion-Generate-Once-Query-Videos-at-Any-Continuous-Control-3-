@@ -1,0 +1,8 @@
+{
+  "protocol": "five object-disjoint Lighting test folds, three seeds, 50 diffusion steps",
+  "generated_object": "one LFVD-Identity family code per family and seed",
+  "adjacent_reader": "piecewise linear interpolation between the two neighboring generated VAE-latent segments",
+  "learned_reader": "the trained scalar-conditioned LFVD query decoder applied to the identical sampled family code",
+  "metric_frames": "generated RGB frames 1..16; conditioning frame 0 excluded",
+  "ground_truth": "official measured illumination targets"
+}

@@ -1,0 +1,17 @@
+{
+  "definition": "Target-relative cross-query consistency avoids rewarding a collapsed constant path.",
+  "adjacent_lpips_target_mae": "Mean absolute error between generated and measured-target adjacent-query LPIPS step sizes.",
+  "path_length_log_error": "Absolute log ratio between generated and target total adjacent-LPIPS path lengths.",
+  "rgb_jerk_log_error": "Absolute log ratio between generated and target RMS second-order RGB query-path variation.",
+  "split": "five locked object-disjoint test folds",
+  "seed": 100,
+  "steps": 50,
+  "families": 80,
+  "methods": [
+    "lfvd",
+    "pointwise_shared_control_token",
+    "pointwise_independent_control_token",
+    "endpoint_latent_interpolation"
+  ],
+  "lpips_backbone": "alex"
+}

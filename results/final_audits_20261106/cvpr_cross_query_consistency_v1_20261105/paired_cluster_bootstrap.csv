@@ -1,0 +1,10 @@
+candidate,reference,metric,mean_delta,ci95_low,ci95_high,clusters,bootstrap_samples
+lfvd,pointwise_shared_control_token,adjacent_lpips_target_mae,-0.05638345053312151,-0.06209431535751946,-0.05063127845488225,20,10000
+lfvd,pointwise_independent_control_token,adjacent_lpips_target_mae,-0.08865568428300322,-0.09940298268309561,-0.07731268707284472,20,10000
+lfvd,endpoint_latent_interpolation,adjacent_lpips_target_mae,-0.11354061976599042,-0.11995516884817334,-0.10693629646459157,20,10000
+lfvd,pointwise_shared_control_token,path_length_log_error,-0.45254478908379925,-0.5304226359439066,-0.37888795196559216,20,10000
+lfvd,pointwise_independent_control_token,path_length_log_error,-0.3759566037784977,-0.4343868775920191,-0.31457669101458974,20,10000
+lfvd,endpoint_latent_interpolation,path_length_log_error,-1.6119308792248745,-1.670602465638787,-1.5548080599708423,20,10000
+lfvd,pointwise_shared_control_token,rgb_jerk_log_error,-0.3587985338897399,-0.4489054941379325,-0.2792312603961829,20,10000
+lfvd,pointwise_independent_control_token,rgb_jerk_log_error,-0.312320357908356,-0.4041970821661342,-0.2074259161419968,20,10000
+lfvd,endpoint_latent_interpolation,rgb_jerk_log_error,-1.9769518813534024,-2.051276489540148,-1.9003827529387913,20,10000

@@ -1,0 +1,58 @@
+{
+  "schema": "lfvd-control-conditioning-fairness-v1",
+  "date": "2026-11-05",
+  "selection_split": "OpenIllumination L0 validation only",
+  "test_seen_during_design": false,
+  "frozen_control_features": [
+    "s",
+    "s^2",
+    "s^3",
+    "s^4",
+    "sin(pi*s)",
+    "cos(pi*s)",
+    "sin(2*pi*s)",
+    "cos(2*pi*s)"
+  ],
+  "pointwise": {
+    "backbone": "Wan2.2-TI2V-5B official DiffSynth trainer",
+    "lora_rank": 64,
+    "updates": 3456,
+    "dataset_repeat": 8,
+    "latent_control_bias": true,
+    "cross_attention_control_token": true,
+    "control_token_hidden": 128,
+    "control_token_output": 4096,
+    "final_projection_initialization": "zeros",
+    "control_parameters": 529968,
+    "lora_parameters": 161218560,
+    "loss": "unchanged raw flow matching"
+  },
+  "lfvd": {
+    "main_query_features": "scalar",
+    "polynomial_fourier_validation_ablation": true,
+    "polynomial_fourier_adopted": false,
+    "reason": "sampled metrics unchanged",
+    "codec_parameters": 10493040,
+    "loss": "unchanged absolute queried VAE-latent L1 for codec and raw family-code flow matching"
+  },
+  "heldout_test": {
+    "folds": ["L0", "L1", "L2", "L3", "L4"],
+    "seeds": [100, 200, 300],
+    "diffusion_steps": 50,
+    "methods_recomputed": [
+      "Pointwise control-token independent noise",
+      "Pointwise control-token shared noise",
+      "Pointwise control-token endpoint latent interpolation"
+    ],
+    "unchanged_reference": "existing locked LFVD-Mix 5-fold outputs",
+    "cluster_bootstrap_unit": "held-out object",
+    "bootstrap_resamples": 10000
+  },
+  "exposure_audit": {
+    "purpose": "separate family representation from ninefold per-control supervision density",
+    "pointwise_updates": 31104,
+    "architecture": "original scalar-bias Pointwise",
+    "split": "L0 validation",
+    "status_at_campaign_launch": "running"
+  }
+}

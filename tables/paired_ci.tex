@@ -1,8 +1,9 @@
 \begin{table}[t]
 \centering
-\caption{Paired LFVD-Mix minus shared-noise Pointwise differences. Intervals are
-recomputed with 10,000 object/actor-cluster resamples. Negative LPIPS and
-positive values for the other metrics favor LFVD.}
+\caption{Paired LFVD-Mix minus shared-noise Pointwise differences. Lighting
+uses the strengthened control-token Pointwise. Intervals use 10,000
+object/actor-cluster resamples. Negative LPIPS and positive values for the
+other metrics favor LFVD.}
 \label{tab:paired_ci}
 \scriptsize
 \setlength{\tabcolsep}{3pt}
@@ -10,10 +11,10 @@ positive values for the other metrics favor LFVD.}
 \toprule
 Dataset & Metric & Difference & 95\% interval\\
 \midrule
-OpenIllumination & LPIPS & -0.0784 & [-0.0920, -0.0662] \\
- & PSNR & +1.849 & [+1.529, +2.186] \\
- & SSIM & +0.0221 & [+0.0165, +0.0278] \\
- & $\rho$ & +0.1461 & [+0.0885, +0.2085] \\
+OpenIllumination & LPIPS & -0.0414 & [-0.0511, -0.0316] \\
+ & PSNR & +1.363 & [+1.139, +1.610] \\
+ & SSIM & +0.0208 & [+0.0166, +0.0253] \\
+ & $\rho$ & +0.0023 & [-0.0208, +0.0243] \\
 \midrule
 MEAD & LPIPS & -0.0006 & [-0.0151, +0.0187] \\
  & PSNR & +0.428 & [-0.086, +0.926] \\

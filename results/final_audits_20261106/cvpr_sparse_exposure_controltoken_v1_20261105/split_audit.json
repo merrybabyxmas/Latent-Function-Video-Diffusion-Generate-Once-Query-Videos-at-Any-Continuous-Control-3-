@@ -1,0 +1,42 @@
+[
+  {
+    "fold": "L0",
+    "manifest": "/home/dongwoo39/lfvd_native_texture_v1_20261027/runs/cvpr_final_20261031_registry_v1/manifests/openillumination_L0_full/manifest.json",
+    "sha256": "d848410ac727af45ea0bea087558d523eef055414346498ad3f627a104a54f92",
+    "test_families": 16,
+    "test_objects": 4,
+    "train_test_overlap": []
+  },
+  {
+    "fold": "L1",
+    "manifest": "/home/dongwoo39/lfvd_native_texture_v1_20261027/runs/cvpr_final_20261031_registry_v1/manifests/openillumination_L1_full/manifest.json",
+    "sha256": "b965b08d31f74524e9bd5b7e14edb4d960d1f0a6e1dbc964fa31bb135c627181",
+    "test_families": 16,
+    "test_objects": 4,
+    "train_test_overlap": []
+  },
+  {
+    "fold": "L2",
+    "manifest": "/home/dongwoo39/lfvd_native_texture_v1_20261027/runs/cvpr_final_20261031_registry_v1/manifests/openillumination_L2_full/manifest.json",
+    "sha256": "c252d979fa3fc0896602c18b884286141c9eeb632504b77cd6e7b7badc4d6fbb",
+    "test_families": 16,
+    "test_objects": 4,
+    "train_test_overlap": []
+  },
+  {
+    "fold": "L3",
+    "manifest": "/home/dongwoo39/lfvd_native_texture_v1_20261027/runs/cvpr_final_20261031_registry_v1/manifests/openillumination_L3_full/manifest.json",
+    "sha256": "93f9a37758d96d110b765f0c40bd82a1982a0da6fb2fde1ec7df2e11188e1a41",
+    "test_families": 16,
+    "test_objects": 4,
+    "train_test_overlap": []
+  },
+  {
+    "fold": "L4",
+    "manifest": "/home/dongwoo39/lfvd_native_texture_v1_20261027/runs/cvpr_final_20261031_registry_v1/manifests/openillumination_L4_full/manifest.json",
+    "sha256": "e4ae50bb9739cc723e843b04d3488fa0c96a4a9105eb8c5c287e16d1d09355cb",
+    "test_families": 16,
+    "test_objects": 4,
+    "train_test_overlap": []
+  }
+]

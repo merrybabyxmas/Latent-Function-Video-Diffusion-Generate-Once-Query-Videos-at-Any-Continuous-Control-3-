@@ -1,0 +1,17 @@
+\begin{table}[t]
+\centering
+\caption{\textbf{Dense-training exposure audit} on the scene-disjoint L0
+validation fold (25 steps, seed 100). Pointwise receives nine times as many
+updates. This is a stress test, not the main matched-update protocol.}
+\label{tab:exposure_audit}
+\scriptsize
+\setlength{\tabcolsep}{3.0pt}
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lrrrr@{}}
+\toprule
+Method & LPIPS$\downarrow$ & PSNR$\uparrow$ & SSIM$\uparrow$ & $\rho\uparrow$ \\
+\midrule
+Pointwise, $9\times$ updates & \textbf{.3268} & 20.78 & .7413 & \textbf{.9979} \\
+LFVD, $1\times$ updates & .3365 & \textbf{20.86} & \textbf{.7487} & .9729 \\
+\bottomrule
+\end{tabular*}
+\end{table}
